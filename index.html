@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QMentisAI - Projects Dashboard</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fb;
+        color: #333;
+      }
+      .app-container {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 60px;
+        background-color: #3377ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+      }
+      .sidebar-item {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        color: white;
+        border-radius: 8px;
+        position: relative;
+        cursor: pointer;
+      }
+      .sidebar-item.active {
+        background-color: white;
+        color: #3377ff;
+      }
+      .sidebar-item-tooltip {
+        position: absolute;
+        left: 50px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        white-space: nowrap;
+      }
+      .sidebar-item:hover .sidebar-item-tooltip {
+        opacity: 1;
+      }
+      .content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .header {
+        height: 60px;
+        border-bottom: 1px solid #e6e9f0;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        background-color: white;
+        justify-content: space-between;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .logo-img {
+        height: 40px;
+        margin-right: 10px;
+      }
+      .user-menu {
+        display: flex;
+        align-items: center;
+      }
+      .user-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background-color: #f0f2f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+      }
+      .breadcrumb {
+        padding: 16px 24px;
+        font-size: 12px;
+        color: #8e8e93;
+        background-color: white;
+        border-bottom: 1px solid #e6e9f0;
+      }
+      .main-content {
+        flex: 1;
+        padding: 24px;
+      }
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+      }
+      .count-badge {
+        display: inline-block;
+        background-color: #eeeef4;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-left: 8px;
+      }
+      .view-control {
+        display: flex;
+        align-items: center;
+      }
+      .view-btn {
+        padding: 6px 12px;
+        background-color: #f5f7fb;
+        border: 1px solid #e6e9f0;
+        margin-right: 8px;
+        border-radius: 4px;
+      }
+      .search-box {
+        padding: 8px 16px;
+        border: 1px solid #e6e9f0;
+        border-radius: 4px;
+        margin-right: 16px;
+        width: 200px;
+      }
+      .add-project-btn {
+        background-color: #3377ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+      }
+      .project-card {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .project-header {
+        padding: 16px;
+        border-bottom: 1px solid #f5f7fb;
+        display: flex;
+        justify-content: space-between;
+      }
+      .project-title {
+        flex: 1;
+      }
+      .project-name {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .project-date {
+        font-size: 12px;
+        color: #8e8e93;
+        margin-top: 8px;
+      }
+      .favorite-btn {
+        color: #8e8e93;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+      .favorite-btn.active {
+        color: #ffd700;
+      }
+      .project-body {
+        padding: 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .module-indicators {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .module-indicator {
+        display: flex;
+        align-items: center;
+        background-color: #f5f7fb;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+      .module-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        margin-right: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 10px;
+      }
+      .module-count {
+        background-color: rgba(51, 119, 255, 0.1);
+        color: #3377ff;
+        border-radius: 8px;
+        padding: 2px 6px;
+        margin-left: 4px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .project-field {
+        display: flex;
+        align-items: flex-start;
+        font-size: 14px;
+      }
+      .field-label {
+        color: #8e8e93;
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .project-owner {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .team-members {
+        display: flex;
+        margin-left: auto;
+        align-items: center;
+      }
+      .member-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        background-color: #f0f2f5;
+        border: 2px solid white;
+        margin-left: -8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .member-icon:first-child {
+        margin-left: 0;
+      }
+      .project-code {
+        color: #3377ff;
+        font-weight: 500;
+      }
+      .project-footer {
+        border-top: 1px solid #f5f7fb;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .badge-active {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+      }
+      .badge-hold {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+      }
+      .badge-planning {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+      }
+      .badge-development {
+        background-color: rgba(0, 123, 255, 0.1);
+        color: #007bff;
+      }
+      .project-more {
+        color: #8e8e93;
+        cursor: pointer;
+        position: relative;
+      }
+      .category-tag {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        height: 8px;
+        width: 8px;
+        border-radius: 4px;
+      }
+      .status-ribbon {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+      }
+      .ribbon-active {
+        background-color: #28a745;
+      }
+      .ribbon-hold {
+        background-color: #ffc107;
+      }
+      .ribbon-planning {
+        background-color: #17a2b8;
+      }
+      .ribbon-development {
+        background-color: #007bff;
+      }
+      .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background-color: #f8f9fa; /* Lighter background */
+        border-radius: 4px;
+        border: 1px solid #dee2e6; /* Add a visible border */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+        padding: 8px 0;
+        min-width: 120px;
+        z-index: 50; /* Higher z-index to ensure it appears above other elements */
+        display: none;
+      }
+      .dropdown-menu.show {
+        display: block;
+      }
+      .dropdown-item {
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .dropdown-item:hover {
+        background-color: #f5f7fb;
+      }
+      .dropdown-item.delete {
+        color: #dc3545;
+      }
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      .modal.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 24px;
+        width: 400px;
+        max-width: 90%;
+      }
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .modal-body {
+        margin-bottom: 24px;
+      }
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+      }
+      .btn-cancel {
+        background-color: #f5f7fb;
+        color: #333;
+      }
+      .btn-delete {
+        background-color: #dc3545;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="sidebar">
+        <div class="sidebar-item active">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <div class="sidebar-item-tooltip">Projects</div>
+        </div>
+        <div class="sidebar-item">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+            ></path>
+            <path
+              d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+            ></path>
+          </svg>
+          <div class="sidebar-item-tooltip">Integration</div>
+        </div>
+        <div class="sidebar-item">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <div class="sidebar-item-tooltip">Logs</div>
+        </div>
+        <div class="sidebar-item">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+          <div class="sidebar-item-tooltip">Settings</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="header">
+          <div class="logo">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png"
+              alt="QMentisAI Logo"
+              class="logo-img"
+            />
+          </div>
+          <div class="user-menu">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8e8e93"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"
+              ></path>
+              <path d="M16 16 21 21"></path>
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8e8e93"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-left: 16px"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <div class="user-icon">JD</div>
+          </div>
+        </div>
+
+        <div class="breadcrumb">Home / Projects</div>
+
+        <div class="main-content">
+          <div class="header-row">
+            <h2 class="section-title">
+              My Projects <span class="count-badge">7</span>
+            </h2>
+            <div class="view-control">
+              <input
+                type="text"
+                class="search-box"
+                placeholder="Search Projects..."
+              />
+              <button class="view-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </button>
+              <button class="view-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </button>
+              <a href="page2.html"
+                ><button class="add-project-btn">+ Create Project</button></a
+              >
+            </div>
+          </div>
+          <a href="page3.html">
+            <div class="project-grid">
+              <div class="project-card">
+                <div class="status-ribbon ribbon-active"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">E-Commerce App Redesign</h3>
+                    <div class="project-date">Feb 15, 2025</div>
+                  </div>
+                  <div class="favorite-btn active">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #28a745"
+                      >
+                        SJ
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #dc3545"
+                      >
+                        MB
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>May 20, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">DEV-A2B-001</div>
+                  </div>
+
+                  <div class="module-indicators">
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #3377ff"
+                      >
+                        TS
+                      </div>
+                      Test Strategy
+                      <span class="module-count">2</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #28a745"
+                      >
+                        TP
+                      </div>
+                      Test Plan
+                      <span class="module-count">3</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #dc3545"
+                      >
+                        US
+                      </div>
+                      User Story
+                      <span class="module-count">14</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #ff9900"
+                      >
+                        RA
+                      </div>
+                      Risk Assessment
+                      <span class="module-count">6</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-active">Active</div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project 2 -->
+              <div class="project-card">
+                <div class="status-ribbon ribbon-active"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">Lorem ipsum is dummy text</h3>
+                    <div class="project-date">Feb 18, 2025</div>
+                  </div>
+                  <div class="favorite-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #ff9900"
+                      >
+                        JS
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>Jun 30, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">DEV-X7Y-002</div>
+                  </div>
+
+                  <div class="module-indicators">
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #3377ff"
+                      >
+                        TS
+                      </div>
+                      Test Strategy
+                      <span class="module-count">1</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #28a745"
+                      >
+                        TP
+                      </div>
+                      Test Plan
+                      <span class="module-count">2</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #dc3545"
+                      >
+                        US
+                      </div>
+                      User Story
+                      <span class="module-count">8</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-active">Active</div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project 3 -->
+              <div class="project-card">
+                <div class="status-ribbon ribbon-development"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">Lorem ipsum is dummy text</h3>
+                    <div class="project-date">Feb 19, 2025</div>
+                  </div>
+                  <div class="favorite-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #28a745"
+                      >
+                        SJ
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #dc3545"
+                      >
+                        MB
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #17a2b8"
+                      >
+                        +2
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>Apr 15, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">DEV-C5D-003</div>
+                  </div>
+
+                  <div class="module-indicators">
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #3377ff"
+                      >
+                        TS
+                      </div>
+                      Test Strategy
+                      <span class="module-count">3</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #dc3545"
+                      >
+                        US
+                      </div>
+                      User Story
+                      <span class="module-count">21</span>
+                    </div>
+                    <div class="module-indicator">
+                      <div
+                        class="module-icon"
+                        style="background-color: #ff9900"
+                      >
+                        RA
+                      </div>
+                      Risk Assessment
+                      <span class="module-count">10</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-development">
+                    In Development
+                  </div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project 4 -->
+              <div class="project-card">
+                <div class="status-ribbon ribbon-active"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">Lorem ipsum is dummy text</h3>
+                    <div class="project-date">Feb 19, 2025</div>
+                  </div>
+                  <div class="favorite-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #ff9900"
+                      >
+                        JS
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>Mar 25, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">QA-B1Z-001</div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-active">Active</div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project 5 -->
+              <div class="project-card">
+                <div class="status-ribbon ribbon-active"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">Lorem ipsum is dummy text</h3>
+                    <div class="project-date">Feb 20, 2025</div>
+                  </div>
+                  <div class="favorite-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #28a745"
+                      >
+                        SJ
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #dc3545"
+                      >
+                        MB
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>May 15, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">DEV-F3G-004</div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-active">Active</div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project 6 -->
+              <div class="project-card">
+                <div class="status-ribbon ribbon-planning"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">Lorem ipsum is dummy text</h3>
+                    <div class="project-date">Feb 21, 2025</div>
+                  </div>
+                  <div class="favorite-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #28a745"
+                      >
+                        SJ
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>Apr 10, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">PRD-H8I-001</div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-planning">In Planning</div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project 7 -->
+              <div class="project-card">
+                <div class="status-ribbon ribbon-active"></div>
+                <div class="project-header">
+                  <div class="project-title">
+                    <h3 class="project-name">Lorem ipsum is dummy text</h3>
+                    <div class="project-date">Feb 22, 2025</div>
+                  </div>
+                  <div class="favorite-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                      ></polygon>
+                    </svg>
+                  </div>
+                </div>
+                <div class="project-body">
+                  <div class="project-field">
+                    <div class="field-label">Owner:</div>
+                    <div class="project-owner">John Doe</div>
+                    <div class="team-members">
+                      <div
+                        class="member-icon"
+                        style="background-color: #3377ff"
+                      >
+                        JD
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #28a745"
+                      >
+                        SJ
+                      </div>
+                      <div
+                        class="member-icon"
+                        style="background-color: #ff9900"
+                      >
+                        JS
+                      </div>
+                    </div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Due Date:</div>
+                    <div>Jun 30, 2025</div>
+                  </div>
+                  <div class="project-field">
+                    <div class="field-label">Code:</div>
+                    <div class="project-code">DEV-K9L-005</div>
+                  </div>
+                </div>
+                <div class="project-footer">
+                  <div class="status-badge badge-active">Active</div>
+                  <div class="project-more">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="19" cy="12" r="1"></circle>
+                      <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                    <div class="dropdown-menu">
+                      <div class="dropdown-item delete">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+      <div class="modal-content">
+        <div class="modal-title">Delete Project</div>
+        <div class="modal-body">
+          Are you sure you want to delete this project? This action cannot be
+          undone.
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-cancel" id="cancelDelete">Cancel</button>
+          <button class="btn btn-delete" id="confirmDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Toggle favorite status
+      document.querySelectorAll(".favorite-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          this.classList.toggle("active");
+        });
+      });
+
+      // Show dropdown menu when clicking on three dots
+      document.querySelectorAll(".project-more").forEach((more) => {
+        more.addEventListener("click", function (e) {
+          e.stopPropagation();
+          // Close all other dropdowns
+          document.querySelectorAll(".dropdown-menu.show").forEach((menu) => {
+            if (menu !== this.querySelector(".dropdown-menu")) {
+              menu.classList.remove("show");
+            }
+          });
+          // Toggle current dropdown
+          this.querySelector(".dropdown-menu").classList.toggle("show");
+        });
+      });
+
+      // Close dropdown when clicking elsewhere
+      document.addEventListener("click", function () {
+        document.querySelectorAll(".dropdown-menu.show").forEach((menu) => {
+          menu.classList.remove("show");
+        });
+      });
+
+      // Delete confirmation
+      const deleteModal = document.getElementById("deleteModal");
+      let projectToDelete = null;
+
+      document.querySelectorAll(".dropdown-item.delete").forEach((item) => {
+        item.addEventListener("click", function () {
+          projectToDelete = this.closest(".project-card");
+          deleteModal.classList.add("show");
+        });
+      });
+
+      document
+        .getElementById("cancelDelete")
+        .addEventListener("click", function () {
+          deleteModal.classList.remove("show");
+          projectToDelete = null;
+        });
+
+      document
+        .getElementById("confirmDelete")
+        .addEventListener("click", function () {
+          if (projectToDelete) {
+            projectToDelete.remove();
+          }
+          deleteModal.classList.remove("show");
+          projectToDelete = null;
+        });
+    </script>
+  </body>
+</html>

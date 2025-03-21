@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QMentisAI - Project Details</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fb;
+        color: #333;
+      }
+      .app-container {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 60px;
+        background-color: #3377ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+      }
+      .sidebar-item {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        color: white;
+        border-radius: 8px;
+        position: relative;
+        cursor: pointer;
+      }
+      .sidebar-item.active {
+        background-color: white;
+        color: #3377ff;
+      }
+      .sidebar-item-tooltip {
+        position: absolute;
+        left: 50px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        white-space: nowrap;
+      }
+      .sidebar-item:hover .sidebar-item-tooltip {
+        opacity: 1;
+      }
+      .content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .header {
+        height: 60px;
+        border-bottom: 1px solid #e6e9f0;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        background-color: white;
+        justify-content: space-between;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .logo-img {
+        height: 40px;
+        margin-right: 10px;
+      }
+      .user-menu {
+        display: flex;
+        align-items: center;
+      }
+      .user-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background-color: #f0f2f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+      }
+      .breadcrumb {
+        padding: 16px 24px;
+        font-size: 12px;
+        color: #8e8e93;
+        background-color: white;
+        border-bottom: 1px solid #e6e9f0;
+      }
+      .breadcrumb a {
+        color: #8e8e93;
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb-active {
+        color: #3377ff;
+        font-weight: 500;
+      }
+      .main-content {
+        flex: 1;
+        padding: 24px;
+      }
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        overflow: hidden;
+      }
+      .project-header {
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .project-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .project-description {
+        color: #6c757d;
+        margin-bottom: 16px;
+      }
+      .project-meta {
+        display: flex;
+        gap: 36px;
+        margin-top: 16px;
+      }
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .meta-label {
+        font-size: 12px;
+        color: #8e8e93;
+      }
+      .meta-value {
+        font-weight: 500;
+      }
+      .meta-value.status {
+        color: #28a745;
+      }
+      .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .btn-primary {
+        background-color: #3377ff;
+        color: white;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+        color: white;
+      }
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid #e6e9f0;
+        color: #333;
+      }
+      .btn-outline:hover {
+        background-color: #f5f7fb;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 16px;
+        display: flex;
+        align-items: center;
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        flex-shrink: 0;
+      }
+      .user-stories-icon {
+        background-color: rgba(51, 119, 255, 0.1);
+        color: #3377ff;
+      }
+      .bug-reports-icon {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+      }
+      .test-cases-icon {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+      }
+      .test-automation-icon {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+      }
+      .test-plans-icon {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+      }
+      .stat-content {
+        flex: 1;
+      }
+      .stat-label {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 4px;
+      }
+      .stat-value {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .stat-meta {
+        font-size: 12px;
+        color: #8e8e93;
+        margin-top: 4px;
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .section-subtitle {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 16px;
+      }
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .module-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        text-align: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      .module-card:hover {
+        border-color: #3377ff;
+        transform: translateY(-2px);
+      }
+      .module-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+      }
+      .module-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .module-description {
+        font-size: 14px;
+        color: #6c757d;
+      }
+      .artifacts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .artifact-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+      .artifact-header {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e6e9f0;
+      }
+      .artifact-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .artifact-badge {
+        background-color: rgba(51, 119, 255, 0.1);
+        color: #3377ff;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+      }
+      .artifact-content {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .artifact-item {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #f5f7fb;
+      }
+      .artifact-item:last-child {
+        border-bottom: none;
+      }
+      .file-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        flex-shrink: 0;
+        font-size: 12px;
+      }
+      .file-icon i {
+        font-size: 16px;
+        margin-bottom: 2px;
+      }
+      .file-word {
+        background-color: #e8f0fe;
+        color: #2b6cb0;
+      }
+      .file-pdf {
+        background-color: #feebc8;
+        color: #c05621;
+      }
+      .file-excel {
+        background-color: #e6ffed;
+        color: #22543d;
+      }
+      .file-code {
+        background-color: #e6fffa;
+        color: #047481;
+      }
+      .file-info {
+        flex: 1;
+      }
+      .file-name {
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .file-meta {
+        font-size: 12px;
+        color: #8e8e93;
+      }
+      .file-action {
+        color: #3377ff;
+        cursor: pointer;
+      }
+      .file-action:hover {
+        color: #2a5fc9;
+      }
+      .artifact-footer {
+        padding: 12px;
+        text-align: center;
+        background-color: #f8f9fa;
+        border-top: 1px solid #e6e9f0;
+      }
+      .artifact-footer a {
+        color: #3377ff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .artifact-footer a:hover {
+        text-decoration: underline;
+      }
+      .activity-section {
+        margin-bottom: 24px;
+      }
+      .activity-item {
+        padding: 16px;
+        display: flex;
+        align-items: flex-start;
+        border-bottom: 1px solid #f5f7fb;
+      }
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+      .activity-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        background-color: #f0f2f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+      .activity-content {
+        flex: 1;
+      }
+      .activity-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .activity-user {
+        font-weight: 500;
+        margin-right: 8px;
+      }
+      .activity-time {
+        font-size: 12px;
+        color: #8e8e93;
+      }
+      .activity-text {
+        color: #6c757d;
+      }
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      .modal.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal-content {
+        background-color: white;
+        border-radius: 8px;
+        width: 500px;
+        max-width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+      .modal-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid #e6e9f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #8e8e93;
+      }
+      .modal-body {
+        padding: 24px;
+      }
+      .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #e6e9f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+      .delete-warning {
+        color: #dc3545;
+        font-weight: 500;
+        margin-bottom: 16px;
+      }
+      .delete-list {
+        margin-bottom: 16px;
+      }
+      .delete-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f7fb;
+      }
+      .delete-item:last-child {
+        border-bottom: none;
+      }
+      .delete-item-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .delete-item-count {
+        font-weight: 500;
+      }
+      .delete-confirmation {
+        margin-top: 16px;
+        padding: 16px;
+        background-color: #fff8f8;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+      }
+      .delete-confirmation-text {
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      .add-module-heading {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #333;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="sidebar">
+        <div class="sidebar-item active">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <div class="sidebar-item-tooltip">Projects</div>
+        </div>
+        <div class="sidebar-item">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+            ></path>
+            <path
+              d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+            ></path>
+          </svg>
+          <div class="sidebar-item-tooltip">Integration</div>
+        </div>
+        <div class="sidebar-item">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <div class="sidebar-item-tooltip">Logs</div>
+        </div>
+        <div class="sidebar-item">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+          <div class="sidebar-item-tooltip">Settings</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="header">
+          <div class="logo">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png"
+              alt="QMentisAI Logo"
+              class="logo-img"
+            />
+          </div>
+          <div class="user-menu">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8e8e93"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"
+              ></path>
+              <path d="M16 16 21 21"></path>
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8e8e93"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-left: 16px"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <div class="user-icon">JD</div>
+          </div>
+        </div>
+
+        <div class="breadcrumb">
+          <a href="#">Home</a> / <a href="#">Projects</a> /
+          <span class="breadcrumb-active">E-Commerce App Redesign</span>
+        </div>
+
+        <div class="main-content">
+          <div class="card">
+            <div class="project-header">
+              <div>
+                <h1 class="project-title">E-Commerce App Redesign</h1>
+                <p class="project-description">
+                  Redesigning the mobile shopping experience for our flagship
+                  e-commerce application
+                </p>
+
+                <div class="project-meta">
+                  <div class="meta-item">
+                    <span class="meta-label">Project ID</span>
+                    <span class="meta-value">PRJ-2025-003</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Created</span>
+                    <span class="meta-value">Feb 15, 2025</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Due Date</span>
+                    <span class="meta-value">May 30, 2025</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Status</span>
+                    <span class="meta-value status">Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <button class="btn btn-danger" id="deleteProjectBtn">
+                  <i class="fas fa-trash-alt"></i>
+                  Delete Project
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="section-title">Project Stats</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon user-stories-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">User Stories</div>
+                <div class="stat-value">35</div>
+                <div class="stat-meta">8 need refinement</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon bug-reports-icon">
+                <i class="fas fa-bug"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Bug Reports</div>
+                <div class="stat-value">12</div>
+                <div class="stat-meta">3 critical</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon test-cases-icon">
+                <i class="fas fa-vial"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Test Cases</div>
+                <div class="stat-value">48</div>
+                <div class="stat-meta">85% coverage</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon test-automation-icon">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Automated Tests</div>
+                <div class="stat-value">22</div>
+                <div class="stat-meta">46% automated</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon test-plans-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Test Plans</div>
+                <div class="stat-value">3</div>
+                <div class="stat-meta">2 active</div>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="add-module-heading">Add Modules to your project</h2>
+          <div class="section-subtitle">
+            Select a module to work with. Each module will open in a new tab.
+          </div>
+
+          <div class="modules-grid">
+            <div class="module-card">
+              <div class="module-icon user-stories-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <h3 class="module-title">User Stories</h3>
+              <p class="module-description">
+                Create, refine and manage user stories
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon bug-reports-icon">
+                <i class="fas fa-bug"></i>
+              </div>
+              <h3 class="module-title">Bug Reporting</h3>
+              <p class="module-description">
+                Report, track and manage bugs and issues
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon test-cases-icon">
+                <i class="fas fa-vial"></i>
+              </div>
+              <h3 class="module-title">Test Design</h3>
+              <p class="module-description">
+                Create and manage test cases and scenarios
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon test-automation-icon">
+                <i class="fas fa-robot"></i>
+              </div>
+              <h3 class="module-title">Test Automation</h3>
+              <p class="module-description">
+                Create and run automated test scripts
+              </p>
+            </div>
+
+            <div class="module-card">
+              <div class="module-icon test-plans-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <h3 class="module-title">Test Planning</h3>
+              <p class="module-description">
+                Create and manage test plans and strategies
+              </p>
+            </div>
+          </div>
+
+          <h2 class="section-title">Project Artifacts</h2>
+          <div class="artifacts-grid">
+            <!-- User Stories Artifacts -->
+            <div class="artifact-card">
+              <div
+                class="artifact-header"
+                style="background-color: rgba(51, 119, 255, 0.1)"
+              >
+                <div class="artifact-title">
+                  <i class="fas fa-file-alt" style="color: #3377ff"></i>
+                  User Stories
+                </div>
+                <div class="artifact-badge">35 total</div>
+              </div>
+              <div class="artifact-content">
+                <div class="artifact-item">
+                  <div class="file-icon file-word">
+                    <i class="fas fa-file-word"></i>
+                    <span>DOCX</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">Authentication_Stories.docx</div>
+                    <div class="file-meta">
+                      2.4 MB • Last updated: Mar 2, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+
+                <div class="artifact-item">
+                  <div class="file-icon file-pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">Shopping_Cart_Requirements.pdf</div>
+                    <div class="file-meta">
+                      1.8 MB • Last updated: Mar 5, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+
+                <div class="artifact-item">
+                  <div class="file-icon file-excel">
+                    <i class="fas fa-file-excel"></i>
+                    <span>XLSX</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">User_Story_Tracking.xlsx</div>
+                    <div class="file-meta">
+                      856 KB • Last updated: Mar 8, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="artifact-footer">
+                <a href="#">View All User Story Artifacts</a>
+              </div>
+            </div>
+
+            <!-- Bug Reports Artifacts -->
+            <div class="artifact-card">
+              <div
+                class="artifact-header"
+                style="background-color: rgba(220, 53, 69, 0.1)"
+              >
+                <div class="artifact-title">
+                  <i class="fas fa-bug" style="color: #dc3545"></i>
+                  Bug Reports
+                </div>
+                <div
+                  class="artifact-badge"
+                  style="
+                    background-color: rgba(220, 53, 69, 0.1);
+                    color: #dc3545;
+                  "
+                >
+                  12 total
+                </div>
+              </div>
+              <div class="artifact-content">
+                <div class="artifact-item">
+                  <div class="file-icon file-pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">Critical_Bugs_Report.pdf</div>
+                    <div class="file-meta">
+                      1.2 MB • Last updated: Mar 3, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+
+                <div class="artifact-item">
+                  <div class="file-icon file-excel">
+                    <i class="fas fa-file-excel"></i>
+                    <span>XLSX</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">Bug_Tracking_Matrix.xlsx</div>
+                    <div class="file-meta">
+                      945 KB • Last updated: Mar 7, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="artifact-footer">
+                <a href="#">View All Bug Report Artifacts</a>
+              </div>
+            </div>
+
+            <!-- Test Design Artifacts -->
+            <div class="artifact-card">
+              <div
+                class="artifact-header"
+                style="background-color: rgba(40, 167, 69, 0.1)"
+              >
+                <div class="artifact-title">
+                  <i class="fas fa-vial" style="color: #28a745"></i>
+                  Test Design
+                </div>
+                <div
+                  class="artifact-badge"
+                  style="
+                    background-color: rgba(40, 167, 69, 0.1);
+                    color: #28a745;
+                  "
+                >
+                  48 total
+                </div>
+              </div>
+              <div class="artifact-content">
+                <div class="artifact-item">
+                  <div class="file-icon file-excel">
+                    <i class="fas fa-file-excel"></i>
+                    <span>XLSX</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">Test_Case_Matrix.xlsx</div>
+                    <div class="file-meta">
+                      1.3 MB • Last updated: Mar 4, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+
+                <div class="artifact-item">
+                  <div class="file-icon file-word">
+                    <i class="fas fa-file-word"></i>
+                    <span>DOCX</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">Test_Scenarios.docx</div>
+                    <div class="file-meta">
+                      2.1 MB • Last updated: Mar 6, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="artifact-footer">
+                <a href="#">View All Test Design Artifacts</a>
+              </div>
+            </div>
+
+            <!-- Test Automation Artifacts -->
+            <div class="artifact-card">
+              <div
+                class="artifact-header"
+                style="background-color: rgba(255, 193, 7, 0.1)"
+              >
+                <div class="artifact-title">
+                  <i class="fas fa-robot" style="color: #ffc107"></i>
+                  Test Automation
+                </div>
+                <div
+                  class="artifact-badge"
+                  style="
+                    background-color: rgba(255, 193, 7, 0.1);
+                    color: #ffc107;
+                  "
+                >
+                  22 total
+                </div>
+              </div>
+              <div class="artifact-content">
+                <div class="artifact-item">
+                  <div class="file-icon file-code">
+                    <i class="fas fa-file-code"></i>
+                    <span>JAVA</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">AuthenticationTests.java</div>
+                    <div class="file-meta">
+                      45 KB • Last updated: Mar 5, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+
+                <div class="artifact-item">
+                  <div class="file-icon file-code">
+                    <i class="fas fa-file-code"></i>
+                    <span>JAVA</span>
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">CartFunctionalityTests.java</div>
+                    <div class="file-meta">
+                      68 KB • Last updated: Mar 8, 2025
+                    </div>
+                  </div>
+                  <div class="file-action">
+                    <i class="fas fa-download"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="artifact-footer">
+                <a href="#">View All Automation Artifacts</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-section">
+            <h2 class="section-title">Recent Activity</h2>
+            <div class="card">
+              <div class="activity-item">
+                <div class="activity-avatar">JD</div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <div class="activity-user">John Doe</div>
+                    <div class="activity-time">2 hours ago</div>
+                  </div>
+                  <div class="activity-text">
+                    Added 3 new user stories to the Shopping Cart module
+                  </div>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar">SJ</div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <div class="activity-user">Sarah Johnson</div>
+                    <div class="activity-time">5 hours ago</div>
+                  </div>
+                  <div class="activity-text">
+                    Reported 2 new bugs in the Checkout process
+                  </div>
+                </div>
+              </div>
+
+              <div class="activity-item">
+                <div class="activity-avatar">MW</div>
+                <div class="activity-content">
+                  <div class="activity-header">
+                    <div class="activity-user">Mike Wilson</div>
+                    <div class="activity-time">Yesterday</div>
+                  </div>
+                  <div class="activity-text">
+                    Created 10 new test cases for the Authentication module
+                  </div>
+                </div>
+              </div>
+
+              <div class="artifact-footer">
+                <a href="#">View All Activity</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Project Modal -->
+    <div class="modal" id="deleteModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">Delete Project</div>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="delete-warning">
+            <i class="fas fa-exclamation-triangle"></i> Warning: This action
+            cannot be undone!
+          </div>
+          <p>The following items will be permanently deleted:</p>
+
+          <div class="delete-list">
+            <div class="delete-item">
+              <div class="delete-item-name">
+                <i class="fas fa-file-alt" style="color: #3377ff"></i>
+                User Stories
+              </div>
+              <div class="delete-item-count">35 items</div>
+            </div>
+
+            <div class="delete-item">
+              <div class="delete-item-name">
+                <i class="fas fa-bug" style="color: #dc3545"></i>
+                Bug Reports
+              </div>
+              <div class="delete-item-count">12 items</div>
+            </div>
+
+            <div class="delete-item">
+              <div class="delete-item-name">
+                <i class="fas fa-vial" style="color: #28a745"></i>
+                Test Cases
+              </div>
+              <div class="delete-item-count">48 items</div>
+            </div>
+
+            <div class="delete-item">
+              <div class="delete-item-name">
+                <i class="fas fa-robot" style="color: #ffc107"></i>
+                Automated Tests
+              </div>
+              <div class="delete-item-count">22 items</div>
+            </div>
+
+            <div class="delete-item">
+              <div class="delete-item-name">
+                <i class="fas fa-tasks" style="color: #17a2b8"></i>
+                Test Plans
+              </div>
+              <div class="delete-item-count">3 items</div>
+            </div>
+
+            <div class="delete-item">
+              <div class="delete-item-name">
+                <i class="fas fa-file" style="color: #6c757d"></i>
+                Documents & Artifacts
+              </div>
+              <div class="delete-item-count">24 files</div>
+            </div>
+          </div>
+
+          <div class="delete-confirmation">
+            <div class="delete-confirmation-text">
+              Are you sure you want to proceed with deletion?
+            </div>
+            <p>
+              All project data, including test cases, user stories, and
+              associated files will be permanently removed from the system.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="cancelDelete">Cancel</button>
+          <button class="btn btn-danger" id="confirmDelete">
+            Delete Project
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Delete Project Modal
+      const deleteProjectBtn = document.getElementById("deleteProjectBtn");
+      const deleteModal = document.getElementById("deleteModal");
+      const closeModal = document.getElementById("closeModal");
+      const cancelDelete = document.getElementById("cancelDelete");
+      const confirmDelete = document.getElementById("confirmDelete");
+
+      deleteProjectBtn.addEventListener("click", function () {
+        deleteModal.classList.add("show");
+      });
+
+      closeModal.addEventListener("click", function () {
+        deleteModal.classList.remove("show");
+      });
+
+      cancelDelete.addEventListener("click", function () {
+        deleteModal.classList.remove("show");
+      });
+
+      confirmDelete.addEventListener("click", function () {
+        // Here you would typically make an API call to delete the project
+        alert("Project has been deleted successfully");
+        deleteModal.classList.remove("show");
+        // Redirect to projects list
+        window.location.href = "index.html";
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", function (event) {
+        if (event.target === deleteModal) {
+          deleteModal.classList.remove("show");
+        }
+      });
+
+      // Module cards click
+      const moduleCards = document.querySelectorAll(".module-card");
+      moduleCards.forEach((card) => {
+        card.addEventListener("click", function () {
+          const moduleName = this.querySelector(".module-title").textContent;
+          alert(`Opening ${moduleName} module...`);
+        });
+      });
+    </script>
+  </body>
+</html>
