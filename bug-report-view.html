@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QMentisAI - Bug Report Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fb;
+      color: #333;
+    }
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      background-color: #3377FF;
+      color: white;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .logo-img {
+      height: 32px;
+      margin-right: 10px;
+    }
+    .user-menu {
+      display: flex;
+      align-items: center;
+    }
+    .user-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 20px;
+      color: white;
+    }
+    .main-content {
+      flex: 1;
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    .breadcrumb a {
+      color: #3377FF;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+    }
+    .bug-id {
+      font-family: monospace;
+      font-weight: 600;
+      color: #3377FF;
+      font-size: 16px;
+      margin-left: 8px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .btn-primary {
+      background-color: #3377FF;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #2a5fc9;
+    }
+    .btn-secondary {
+      background-color: #38d9a9;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #20c997;
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    .btn-outline:hover {
+      background-color: #f5f7fb;
+    }
+    .bug-details {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .bug-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    .bug-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .bug-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .bug-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .meta-label {
+      font-size: 12px;
+      color: #666;
+      font-weight: 500;
+    }
+    .meta-value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-jira {
+      background-color: rgba(0, 82, 204, 0.1);
+      color: #0052CC;
+    }
+    .badge-critical {
+      background-color: rgba(224, 49, 49, 0.1);
+      color: #e03131;
+    }
+    .badge-deep {
+      background-color: rgba(224, 49, 49, 0.1);
+      color: #e03131;
+    }
+    .badge-normal {
+      background-color: rgba(255, 169, 77, 0.1);
+      color: #f59f00;
+    }
+    .badge-simple {
+      background-color: rgba(56, 217, 169, 0.1);
+      color: #099268;
+    }
+    .bug-content {
+      padding: 1.5rem;
+    }
+    .content-section {
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .section-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #444;
+    }
+    .steps-list {
+      padding-left: 1.5rem;
+      margin: 0;
+    }
+    .steps-list li {
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="logo">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png" alt="QMentisAI Logo" class="logo-img">
+        QMentisAI
+      </div>
+      <div class="user-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"></path>
+          <path d="M16 16 21 21"></path>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 16px;">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <div class="user-icon">JD</div>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="breadcrumb">
+        <a href="#">QMentis AI</a> / <a href="#">Projects</a> / <a href="#">E-Commerce Website Redesign</a> / <a href="bug-reports-listing.html">Bug Reports</a> / <span>BUG-001</span>
+      </div>
+      
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-bug" style="color: #3377FF;"></i>
+          Bug Report <span class="bug-id">BUG-001</span>
+        </h1>
+        <div class="header-actions">
+          <button class="btn btn-outline" onclick="window.location.href='bug-reports-listing.html'">
+            <i class="fas fa-arrow-left"></i> Back to List
+          </button>
+          <button class="btn btn-outline">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-secondary">
+            <i class="fas fa-magic"></i> Refine with AI
+          </button>
+        </div>
+      </div>
+      
+      <div class="bug-details">
+        <div class="bug-header">
+          <div class="bug-title">Checkout process fails with error code 500</div>
+          <div class="bug-meta">
+            <div class="bug-meta-item">
+              <div class="meta-label">Impact</div>
+              <div class="meta-value"><span class="badge badge-critical">Critical</span></div>
+            </div>
+            <div class="bug-meta-item">
+              <div class="meta-label">Exploration Depth</div>
+              <div class="meta-value"><span class="badge badge-deep">Deep</span></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bug-content">
+          <div class="content-section">
+            <div class="section-title">Description</div>
+            <div class="section-content">
+              <p>Users attempting to complete checkout receive a 500 server error, preventing them from completing purchases. This is happening on both mobile and desktop browsers. The error occurs after the user clicks the "Complete Purchase" button on the payment information page.</p>
+              <p>This is a critical issue as it directly impacts revenue and customer satisfaction. Multiple customers have reported this issue through customer support channels.</p>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <div class="section-title">Environment Details</div>
+            <div class="section-content">
+              <ul class="steps-list">
+                <li><strong>Browser:</strong> Chrome 120.0.6099.129, Firefox 121.0, Safari 17.2</li>
+                <li><strong>Operating System:</strong> Windows 11, macOS 14.2.1, iOS 17.2</li>
+                <li><strong>Server Environment:</strong> Production</li>
+                <li><strong>Application Version:</strong> 2.4.1</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <div class="section-title">Steps to Reproduce</div>
+            <div class="section-content">
+              <ol class="steps-list">
+                <li>Add any product to cart</li>
+                <li>Proceed to checkout</li>
+                <li>Fill in shipping information and continue</li>
+                <li>Enter payment information (any valid credit card format works for reproduction)</li>
+                <li>Click "Complete Purchase" button</li>
+                <li>Observe 500 error page</li>
+              </ol>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <div class="section-title">Expected Result</div>
+            <div class="section-content">
+              <p>The order should be processed successfully, and the user should be redirected to an order confirmation page with their order details and a confirmation number.</p>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <div class="section-title">Actual Result</div>
+            <div class="section-content">
+              <p>The user sees a 500 server error page. The order is not created in the database, and no confirmation email is sent. The items remain in the user's cart.</p>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <div class="section-title">Additional Result</div>
+            <div class="section-content">
+              <p>Server logs show a null pointer exception in the payment processing module. The error occurs specifically in the PaymentProcessor.validateTransaction method when attempting to process the payment information.</p>
+              <p>This issue appears to have been introduced in the recent 2.4.1 update, as it was not present in version 2.4.0. The payment gateway API was updated in this release, which may be related to the problem.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Action buttons functionality
+      const editButton = document.querySelector('.btn-outline:has(.fa-edit)');
+      const refineButton = document.querySelector('.btn-secondary');
+      
+      editButton.addEventListener('click', function() {
+        alert('Editing bug BUG-001');
+        // In a real implementation, this would navigate to the bug edit page
+      });
+      
+      refineButton.addEventListener('click', function() {
+        alert('Refining bug BUG-001 with AI');
+        // In a real implementation, this would use AI to refine the bug report
+      });
+    });
+  </script>
+</body>
+</html>
