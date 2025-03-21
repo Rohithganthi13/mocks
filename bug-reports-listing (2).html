@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QMentisAI - Bug Reports Listing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fb;
+      color: #333;
+    }
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      background-color: #3377FF;
+      color: white;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .logo-img {
+      height: 32px;
+      margin-right: 10px;
+    }
+    .user-menu {
+      display: flex;
+      align-items: center;
+    }
+    .user-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 20px;
+      color: white;
+    }
+    .main-content {
+      flex: 1;
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    .breadcrumb a {
+      color: #3377FF;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .btn-primary {
+      background-color: #3377FF;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #2a5fc9;
+    }
+    .btn-secondary {
+      background-color: #38d9a9;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #20c997;
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    .btn-outline:hover {
+      background-color: #f5f7fb;
+    }
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-weight: 500;
+      font-size: 14px;
+      color: #666;
+    }
+    .filter-select {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: white;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      width: 250px;
+    }
+    .search-box input {
+      border: none;
+      padding: 0.25rem;
+      flex: 1;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-box i {
+      color: #666;
+      margin-right: 0.5rem;
+    }
+    .project-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .project-header {
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .project-title {
+      font-weight: 600;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .project-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      background-color: #3377FF;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .project-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 14px;
+      color: #666;
+    }
+    .project-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .project-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .bug-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .bug-table th, .bug-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .bug-table th {
+      font-weight: 600;
+      color: #666;
+      font-size: 14px;
+    }
+    .bug-table tr:last-child td {
+      border-bottom: none;
+    }
+    .bug-table tr:hover {
+      background-color: #f8f9fa;
+    }
+    .bug-id {
+      font-family: monospace;
+      font-weight: 600;
+      color: #3377FF;
+    }
+    .bug-title {
+      font-weight: 500;
+    }
+    .bug-description {
+      font-size: 14px;
+      color: #666;
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-jira {
+      background-color: rgba(0, 82, 204, 0.1);
+      color: #0052CC;
+    }
+    .badge-azure {
+      background-color: rgba(0, 120, 212, 0.1);
+      color: #0078D4;
+    }
+    .badge-manual {
+      background-color: rgba(56, 217, 169, 0.1);
+      color: #099268;
+    }
+    .badge-excel {
+      background-color: rgba(33, 186, 69, 0.1);
+      color: #21BA45;
+    }
+    .badge-critical {
+      background-color: rgba(224, 49, 49, 0.1);
+      color: #e03131;
+    }
+    .badge-high {
+      background-color: rgba(247, 103, 7, 0.1);
+      color: #f76707;
+    }
+    .badge-medium {
+      background-color: rgba(255, 169, 77, 0.1);
+      color: #f59f00;
+    }
+    .badge-low {
+      background-color: rgba(56, 217, 169, 0.1);
+      color: #099268;
+    }
+    .badge-simple {
+      background-color: rgba(56, 217, 169, 0.1);
+      color: #099268;
+    }
+    .badge-normal {
+      background-color: rgba(255, 169, 77, 0.1);
+      color: #f59f00;
+    }
+    .badge-deep {
+      background-color: rgba(224, 49, 49, 0.1);
+      color: #e03131;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .action-btn {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .action-btn-view {
+      background-color: rgba(51, 119, 255, 0.1);
+      color: #3377FF;
+    }
+    .action-btn-view:hover {
+      background-color: rgba(51, 119, 255, 0.2);
+    }
+    .action-btn-edit {
+      background-color: rgba(255, 169, 77, 0.1);
+      color: #f59f00;
+    }
+    .action-btn-edit:hover {
+      background-color: rgba(255, 169, 77, 0.2);
+    }
+    .action-btn-refine {
+      background-color: #38d9a9;
+      color: white;
+      padding: 0.25rem 0.75rem;
+    }
+    .action-btn-refine:hover {
+      background-color: #20c997;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+    .page-item {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .page-item:hover {
+      background-color: #f0f0f0;
+    }
+    .page-item.active {
+      background-color: #3377FF;
+      color: white;
+    }
+    .summary-stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .stat-title {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+    }
+    .stat-trend {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 0.5rem;
+    }
+    .trend-up {
+      color: #e03131;
+    }
+    .trend-down {
+      color: #099268;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="logo">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png" alt="QMentisAI Logo" class="logo-img">
+        QMentisAI
+      </div>
+      <div class="user-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"></path>
+          <path d="M16 16 21 21"></path>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 16px;">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <div class="user-icon">JD</div>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="breadcrumb">
+        <a href="#">QMentis AI</a> / <a href="#">Projects</a> / <a href="#">E-Commerce Website Redesign</a> / <span>Bug Reports</span>
+      </div>
+      
+      <h1 class="page-title">
+        <i class="fas fa-bug" style="color: #3377FF;"></i>
+        Bug Reports
+      </h1>
+      
+      <div class="summary-stats">
+        <div class="stat-card">
+          <div class="stat-title">Total Bug Reports</div>
+          <div class="stat-value">32</div>
+          <div class="stat-trend trend-up">
+            <i class="fas fa-arrow-up"></i> 12% from last month
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Critical Issues</div>
+          <div class="stat-value">8</div>
+          <div class="stat-trend trend-up">
+            <i class="fas fa-arrow-up"></i> 5% from last month
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-bar">
+        <div class="filter-group">
+          <div class="filter-label">Filter by:</div>
+          <select class="filter-select">
+            <option>All Sources</option>
+            <option>Jira</option>
+            <option>Azure DevOps</option>
+            <option>Manual</option>
+            <option>Excel/CSV</option>
+          </select>
+          <select class="filter-select">
+            <option>All Impact Levels</option>
+            <option>Critical</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+          <select class="filter-select">
+            <option>All Exploration Depths</option>
+            <option>Simple</option>
+            <option>Normal</option>
+            <option>Deep</option>
+          </select>
+        </div>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search bug reports...">
+        </div>
+      </div>
+      
+      <!-- E-Commerce Website Redesign Project -->
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">
+            <div class="project-icon">EC</div>
+            E-Commerce Website Redesign
+          </div>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <i class="fas fa-bug"></i> 32 bugs
+            </div>
+          </div>
+          <div class="project-actions">
+            <button class="btn btn-outline">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+          </div>
+        </div>
+        
+        <table class="bug-table">
+          <thead>
+            <tr>
+              <th style="width: 10%;">ID</th>
+              <th style="width: 30%;">Title & Description</th>
+              <th style="width: 15%;">Source</th>
+              <th style="width: 10%;">Impact</th>
+              <th style="width: 15%;">Exploration Depth</th>
+              <th style="width: 10%;">Created</th>
+              <th style="width: 10%;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="bug-id">BUG-001</span></td>
+              <td>
+                <div class="bug-title">Checkout process fails with error code 500</div>
+                <div class="bug-description">Users attempting to complete checkout receive a 500 server error, preventing them from completing purchases.</div>
+              </td>
+              <td><span class="badge badge-jira"><i class="fab fa-jira"></i> Jira</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-deep">Deep</span></td>
+              <td>Feb 26, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-002</span></td>
+              <td>
+                <div class="bug-title">Product images not loading in search results</div>
+                <div class="bug-description">Product images fail to load in search results, showing placeholder or broken image icons instead.</div>
+              </td>
+              <td><span class="badge badge-excel"><i class="fas fa-file-excel"></i> Excel</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-normal">Normal</span></td>
+              <td>Feb 25, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-003</span></td>
+              <td>
+                <div class="bug-title">Incorrect price calculation in shopping cart</div>
+                <div class="bug-description">The shopping cart displays incorrect total prices when multiple items are added.</div>
+              </td>
+              <td><span class="badge badge-manual"><i class="fas fa-keyboard"></i> Manual</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-deep">Deep</span></td>
+              <td>Feb 24, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-004</span></td>
+              <td>
+                <div class="bug-title">Filter options not working on category pages</div>
+                <div class="bug-description">Product filters (price, brand, etc.) do not apply correctly when selected on category pages.</div>
+              </td>
+              <td><span class="badge badge-jira"><i class="fab fa-jira"></i> Jira</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-normal">Normal</span></td>
+              <td>Feb 23, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-005</span></td>
+              <td>
+                <div class="bug-title">Login button unresponsive on mobile devices</div>
+                <div class="bug-description">The login button does not respond to taps on mobile devices. This prevents users from logging into the application.</div>
+              </td>
+              <td><span class="badge badge-jira"><i class="fab fa-jira"></i> Jira</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-normal">Normal</span></td>
+              <td>Feb 22, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-006</span></td>
+              <td>
+                <div class="bug-title">User registration form validation errors</div>
+                <div class="bug-description">Form validation on the user registration page shows incorrect error messages and prevents valid submissions.</div>
+              </td>
+              <td><span class="badge badge-azure"><i class="fab fa-microsoft"></i> Azure</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-normal">Normal</span></td>
+              <td>Feb 21, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-007</span></td>
+              <td>
+                <div class="bug-title">Product reviews not displaying</div>
+                <div class="bug-description">Customer reviews are not displaying on product detail pages despite being present in the database.</div>
+              </td>
+              <td><span class="badge badge-manual"><i class="fas fa-keyboard"></i> Manual</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-simple">Simple</span></td>
+              <td>Feb 20, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="bug-id">BUG-008</span></td>
+              <td>
+                <div class="bug-title">Wishlist items disappear after session timeout</div>
+                <div class="bug-description">Items added to the wishlist by logged-in users disappear when their session times out, even after logging back in.</div>
+              </td>
+              <td><span class="badge badge-excel"><i class="fas fa-file-excel"></i> Excel</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-normal">Normal</span></td>
+              <td>Feb 19, 2025</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn action-btn-view"><i class="fas fa-eye"></i></button>
+                  <button class="action-btn action-btn-edit"><i class="fas fa-edit"></i></button>
+                  <button class="action-btn action-btn-refine"><i class="fas fa-magic"></i> Refine with AI</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="pagination">
+        <div class="page-item">Prev</div>
+        <div class="page-item active">1</div>
+        <div class="page-item">2</div>
+        <div class="page-item">3</div>
+        <div class="page-item">4</div>
+        <div class="page-item">Next</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Filter functionality would be implemented here
+      const filterSelects = document.querySelectorAll('.filter-select');
+      
+      filterSelects.forEach(select => {
+        select.addEventListener('change', function() {
+          // In a real implementation, this would filter the bug reports
+          console.log('Filter changed:', this.value);
+        });
+      });
+      
+      // Search functionality
+      const searchInput = document.querySelector('.search-box input');
+      
+      searchInput.addEventListener('input', function() {
+        // In a real implementation, this would search the bug reports
+        console.log('Search query:', this.value);
+      });
+      
+      // Pagination functionality
+      const pageItems = document.querySelectorAll('.page-item');
+      
+      pageItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Remove active class from all page items
+          pageItems.forEach(p => p.classList.remove('active'));
+          
+          // Add active class to clicked page item
+          if (this.textContent !== 'Prev' && this.textContent !== 'Next') {
+            this.classList.add('active');
+          }
+          
+          // In a real implementation, this would load the appropriate page
+          console.log('Page clicked:', this.textContent);
+        });
+      });
+      
+      // Action buttons functionality
+      const viewButtons = document.querySelectorAll('.action-btn-view');
+      const editButtons = document.querySelectorAll('.action-btn-edit');
+      const refineButtons = document.querySelectorAll('.action-btn-refine');
+      
+      viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const bugId = this.closest('tr').querySelector('.bug-id').textContent;
+          console.log('View bug:', bugId);
+          // In a real implementation, this would navigate to the bug details page
+          alert(`Viewing bug ${bugId}`);
+        });
+      });
+      
+      editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const bugId = this.closest('tr').querySelector('.bug-id').textContent;
+          console.log('Edit bug:', bugId);
+          // In a real implementation, this would navigate to the bug edit page
+          alert(`Editing bug ${bugId}`);
+        });
+      });
+      
+      refineButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const bugId = this.closest('tr').querySelector('.bug-id').textContent;
+          console.log('Refine bug with AI:', bugId);
+          // In a real implementation, this would use AI to refine the bug report
+          alert(`Refining bug ${bugId} with AI`);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
