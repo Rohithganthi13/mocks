@@ -1,641 +1,940 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QMentisAI - User Story Refinement</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f7fb;
-      color: #333;
-    }
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .header {
-      background-color: #3377FF;
-      color: white;
-      padding: 0.5rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .logo-img {
-      height: 32px;
-      margin-right: 10px;
-    }
-    .user-menu {
-      display: flex;
-      align-items: center;
-    }
-    .user-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 16px;
-      background-color: rgba(255, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 20px;
-      color: white;
-    }
-    .main-content {
-      flex: 1;
-      padding: 1.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    .breadcrumb {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 0.5rem;
-    }
-    .breadcrumb a {
-      color: #3377FF;
-      text-decoration: none;
-    }
-    .breadcrumb a:hover {
-      text-decoration: underline;
-    }
-    .page-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      color: #333;
-    }
-    .project-info {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      background-color: #f8f9fa;
-    }
-    .project-info-item {
-      display: flex;
-      flex-direction: column;
-    }
-    .project-info-label {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 0.25rem;
-    }
-    .project-info-value {
-      font-weight: 600;
-      color: #333;
-    }
-    .chart-section {
-      display: flex;
-      margin-bottom: 1.5rem;
-      gap: 1.5rem;
-    }
-    .chart-container {
-      flex: 3;
-      background-color: white;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    .chart-title {
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    .chart {
-      height: 200px;
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-    }
-    .chart-bar {
-      flex: 1;
-      border-radius: 4px 4px 0 0;
-    }
-    .chart-bar-poor {
-      background-color: #ff6b6b;
-    }
-    .chart-bar-fair {
-      background-color: #ffa94d;
-    }
-    .chart-bar-good {
-      background-color: #69db7c;
-    }
-    .chart-bar-excellent {
-      background-color: #38d9a9;
-    }
-    .chart-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 0.5rem;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-    }
-    .legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-      margin-right: 6px;
-    }
-    .refinement-target {
-      flex: 1;
-      background-color: white;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      border-left: 4px solid #3377FF;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .refinement-target-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #3377FF;
-    }
-    .refinement-target-description {
-      font-size: 14px;
-      color: #666;
-      line-height: 1.5;
-    }
-    .filter-tabs {
-      display: flex;
-      margin-bottom: 1rem;
-      gap: 0.5rem;
-    }
-    .filter-tab {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      background-color: #f0f0f0;
-      color: #666;
-    }
-    .filter-tab.active {
-      background-color: #3377FF;
-      color: white;
-    }
-    .filter-actions {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-    .filter-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .filter-select {
-      padding: 0.5rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    .stories-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1.5rem;
-      background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    .stories-table th {
-      text-align: left;
-      padding: 0.75rem 1rem;
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #ddd;
-      font-weight: 600;
-      color: #666;
-    }
-    .stories-table td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid #eee;
-      vertical-align: top;
-    }
-    .stories-table tr:hover {
-      background-color: #f8f9fa;
-    }
-    .story-id {
-      font-family: monospace;
-      font-weight: 600;
-      color: #3377FF;
-    }
-    .story-title {
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-    .story-description {
-      font-size: 14px;
-      color: #666;
-    }
-    .invest-score {
-      font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      border-radius: 20px;
-      text-align: center;
-      display: inline-block;
-      min-width: 40px;
-    }
-    .score-poor {
-      background-color: rgba(255, 107, 107, 0.2);
-      color: #e03131;
-    }
-    .score-fair {
-      background-color: rgba(255, 169, 77, 0.2);
-      color: #f76707;
-    }
-    .score-good {
-      background-color: rgba(105, 219, 124, 0.2);
-      color: #2b8a3e;
-    }
-    .score-excellent {
-      background-color: rgba(56, 217, 169, 0.2);
-      color: #099268;
-    }
-    .status-badge {
-      padding: 0.25rem 0.5rem;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      text-align: center;
-      display: inline-block;
-    }
-    .status-good {
-      background-color: rgba(105, 219, 124, 0.2);
-      color: #2b8a3e;
-    }
-    .status-needs-work {
-      background-color: rgba(255, 169, 77, 0.2);
-      color: #f76707;
-    }
-    .status-poor {
-      background-color: rgba(255, 107, 107, 0.2);
-      color: #e03131;
-    }
-    .source-badge {
-      padding: 0.25rem 0.5rem;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      text-align: center;
-      display: inline-block;
-      background-color: rgba(51, 119, 255, 0.1);
-      color: #3377FF;
-    }
-    .source-badge.manual {
-      background-color: rgba(56, 217, 169, 0.1);
-      color: #099268;
-    }
-    .source-badge.azure {
-      background-color: rgba(130, 119, 255, 0.1);
-      color: #5f3dc4;
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .page-item {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .page-item:hover {
-      background-color: #f0f0f0;
-    }
-    .page-item.active {
-      background-color: #3377FF;
-      color: white;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 14px;
-    }
-    .btn-primary {
-      background-color: #3377FF;
-      color: white;
-    }
-    .btn-primary:hover {
-      background-color: #2a5fc9;
-    }
-  </style>
-</head>
-<body>
-  <div class="app-container">
-    <div class="header">
-      <div class="logo">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png" alt="QMentisAI Logo" class="logo-img">
-        QMentisAI
-      </div>
-      <div class="user-menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"></path>
-          <path d="M16 16 21 21"></path>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 16px;">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </svg>
-        <div class="user-icon">JD</div>
-      </div>
-    </div>
-    
-    <div class="main-content">
-      <div class="breadcrumb">
-        <a href="#">QMentis AI</a> / <a href="#">Projects</a> / <a href="#">E-Commerce Website Redesign</a> / <a href="#">User Stories</a>
-      </div>
-      
-      <h1 class="page-title">User Story Refinement</h1>
-      
-      <div class="project-info">
-        <div class="project-info-item">
-          <div class="project-info-label">Project:</div>
-          <div class="project-info-value">E-Commerce Website Redesign</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QMentisAI - User Story Refinement</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fb;
+        color: #333;
+      }
+      .app-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .header {
+        background-color: #3377ff;
+        color: white;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .logo-img {
+        height: 32px;
+        margin-right: 10px;
+      }
+      .user-menu {
+        display: flex;
+        align-items: center;
+      }
+      .user-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background-color: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+        color: white;
+      }
+      .main-content {
+        flex: 1;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .breadcrumb {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 0.5rem;
+      }
+      .breadcrumb a {
+        color: #3377ff;
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+      }
+      .project-info {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        background-color: #f8f9fa;
+      }
+      .project-info-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .project-info-label {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 0.25rem;
+      }
+      .project-info-value {
+        font-weight: 600;
+        color: #333;
+      }
+      .filter-tabs {
+        display: flex;
+        margin-bottom: 1rem;
+        gap: 0.5rem;
+      }
+      .filter-tab {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        background-color: #f0f0f0;
+        color: #666;
+      }
+      .filter-tab.active {
+        background-color: #3377ff;
+        color: white;
+      }
+      .filter-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+      .filter-group {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .filter-select {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .stories-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .stories-table th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+        font-weight: 600;
+        color: #666;
+      }
+      .stories-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eee;
+        vertical-align: top;
+      }
+      .stories-table tr:hover {
+        background-color: #f8f9fa;
+      }
+      .story-id {
+        font-family: monospace;
+        font-weight: 600;
+        color: #3377ff;
+      }
+      .story-title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+      .story-description {
+        font-size: 14px;
+        color: #666;
+      }
+      .source-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        display: inline-block;
+        background-color: rgba(51, 119, 255, 0.1);
+        color: #3377ff;
+      }
+      .source-badge.manual {
+        background-color: rgba(56, 217, 169, 0.1);
+        color: #099268;
+      }
+      .source-badge.azure {
+        background-color: rgba(130, 119, 255, 0.1);
+        color: #5f3dc4;
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .page-item {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .page-item:hover {
+        background-color: #f0f0f0;
+      }
+      .page-item.active {
+        background-color: #3377ff;
+        color: white;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .btn-primary {
+        background-color: #3377ff;
+        color: white;
+      }
+      .btn-primary:hover {
+        background-color: #2a5fc9;
+      }
+      .btn-evaluate {
+        background-color: #38d9a9;
+        color: white;
+      }
+      .btn-evaluate:hover {
+        background-color: #20c997;
+      }
+      .story-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .story-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+      }
+      .story-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .story-card-header {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .story-card-body {
+        padding: 1rem;
+      }
+      .story-card-footer {
+        padding: 1rem;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .story-card-meta {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #666;
+      }
+      .story-card-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .story-card-tag {
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        background-color: #3377ff;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0 0 4px 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .story-card-tag.jira {
+        background-color: #0052cc;
+      }
+      .story-card-tag.azure {
+        background-color: #0078d4;
+      }
+      .story-card-tag.manual {
+        background-color: #38d9a9;
+      }
+      .story-metrics {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .story-metric {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 0.5rem;
+        min-width: 60px;
+      }
+      .story-metric-value {
+        font-weight: 600;
+        color: #3377ff;
+      }
+      .story-metric-label {
+        font-size: 10px;
+        color: #666;
+        text-transform: uppercase;
+      }
+      .view-toggle {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        justify-content: flex-end;
+      }
+      .view-toggle-btn {
+        padding: 0.5rem;
+        border-radius: 4px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .view-toggle-btn.active {
+        background-color: #3377ff;
+        color: white;
+      }
+      .story-insights {
+        background-color: #f0f9ff;
+        border: 1px solid #d0ebff;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .story-insights-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #3377ff;
+      }
+      .story-insights-content {
+        font-size: 14px;
+        color: #333;
+        line-height: 1.5;
+      }
+      .story-insights-stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      .story-insights-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: white;
+        border-radius: 8px;
+        padding: 0.75rem;
+        min-width: 80px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .story-insights-stat-value {
+        font-weight: 600;
+        font-size: 18px;
+        color: #3377ff;
+      }
+      .story-insights-stat-label {
+        font-size: 12px;
+        color: #666;
+        text-align: center;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
+      .empty-state-icon {
+        font-size: 48px;
+        color: #3377ff;
+        margin-bottom: 1rem;
+      }
+      .empty-state-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .empty-state-description {
+        color: #666;
+        margin-bottom: 1.5rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="header">
+        <div class="logo">
+          <img
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png"
+            alt="QMentisAI Logo"
+            class="logo-img"
+          />
+          QMentisAI
         </div>
-        <div class="project-info-item">
-          <div class="project-info-label">Stories:</div>
-          <div class="project-info-value">35</div>
-        </div>
-        <div class="project-info-item">
-          <div class="project-info-label">Avg. INVEST Score:</div>
-          <div class="project-info-value">18/30</div>
-        </div>
-        <div class="project-info-item">
-          <div class="project-info-label">Owner:</div>
-          <div class="project-info-value">John Doe</div>
+        <div class="user-menu">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"
+            ></path>
+            <path d="M16 16 21 21"></path>
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin-left: 16px"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <div class="user-icon">JD</div>
         </div>
       </div>
-      
-      <div class="chart-section">
-        <div class="chart-container">
-          <div class="chart-title">INVEST Score Distribution</div>
-          <div class="chart">
-            <div class="chart-bar chart-bar-poor" style="height: 20%;"></div>
-            <div class="chart-bar chart-bar-poor" style="height: 25%;"></div>
-            <div class="chart-bar chart-bar-poor" style="height: 30%;"></div>
-            <div class="chart-bar chart-bar-fair" style="height: 35%;"></div>
-            <div class="chart-bar chart-bar-fair" style="height: 40%;"></div>
-            <div class="chart-bar chart-bar-fair" style="height: 45%;"></div>
-            <div class="chart-bar chart-bar-fair" style="height: 50%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 60%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 70%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 80%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 75%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 70%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 65%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 60%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 55%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 50%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 45%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 40%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 35%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 30%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 25%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 20%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 15%;"></div>
-            <div class="chart-bar chart-bar-good" style="height: 10%;"></div>
+
+      <div class="main-content">
+        <div class="breadcrumb">
+          <a href="#">QMentis AI</a> / <a href="#">Projects</a> /
+          <a href="#">E-Commerce Website Redesign</a> /
+          <a href="#">User Stories</a>
+        </div>
+
+        <h1 class="page-title">User Story Refinement</h1>
+
+        <div class="project-info">
+          <div class="project-info-item">
+            <div class="project-info-label">Project:</div>
+            <div class="project-info-value">E-Commerce Website Redesign</div>
           </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <div class="legend-color chart-bar-poor"></div>
-              <span>Poor (0-10)</span>
+          <div class="project-info-item">
+            <div class="project-info-label">Stories:</div>
+            <div class="project-info-value">35</div>
+          </div>
+          <div class="project-info-item">
+            <div class="project-info-label">Owner:</div>
+            <div class="project-info-value">John Doe</div>
+          </div>
+          <div class="project-info-item">
+            <div class="project-info-label">Last Updated:</div>
+            <div class="project-info-value">Feb 27, 2025</div>
+          </div>
+        </div>
+
+        <div class="story-insights">
+          <div class="story-insights-title">Ready for Evaluation</div>
+          <div class="story-insights-content">
+            Your user stories are ready for evaluation. QMentisAI can help you
+            analyze and refine your stories to improve clarity, completeness,
+            and testability. Select a story and click "Evaluate" to begin the
+            refinement process.
+          </div>
+          <div class="story-insights-stats">
+            <div class="story-insights-stat">
+              <div class="story-insights-stat-value">35</div>
+              <div class="story-insights-stat-label">Total Stories</div>
             </div>
-            <div class="legend-item">
-              <div class="legend-color chart-bar-fair"></div>
-              <span>Fair (11-15)</span>
+            <div class="story-insights-stat">
+              <div class="story-insights-stat-value">3</div>
+              <div class="story-insights-stat-label">Sources</div>
             </div>
-            <div class="legend-item">
-              <div class="legend-color chart-bar-good"></div>
-              <span>Good (16-20)</span>
+            <div class="story-insights-stat">
+              <div class="story-insights-stat-value">0</div>
+              <div class="story-insights-stat-label">Evaluated</div>
             </div>
-            <div class="legend-item">
-              <div class="legend-color chart-bar-excellent"></div>
-              <span>Excellent (21-30)</span>
+            <div class="story-insights-stat">
+              <div class="story-insights-stat-value">0</div>
+              <div class="story-insights-stat-label">Refined</div>
             </div>
           </div>
         </div>
-        
-        <div class="refinement-target">
-          <div class="refinement-target-title">Refinement Target: 8 stories</div>
-          <div class="refinement-target-description">
-            Focus on stories with scores below 20 to improve overall project quality. Prioritize stories that are critical for the user journey and have the lowest INVEST scores.
-            <br><br>
-            Improving these stories will significantly enhance the clarity and implementability of requirements for the development team.
+
+        <div class="filter-tabs">
+          <div class="filter-tab active">All Stories</div>
+          <div class="filter-tab">Jira</div>
+          <div class="filter-tab">Azure DevOps</div>
+          <div class="filter-tab">Manual</div>
+        </div>
+
+        <div class="filter-actions">
+          <div class="filter-group">
+            <select class="filter-select">
+              <option>Sort: Last Updated</option>
+              <option>Sort: ID</option>
+              <option>Sort: Source</option>
+            </select>
+          </div>
+          <div class="view-toggle">
+            <div class="view-toggle-btn active" id="card-view-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </div>
+            <div class="view-toggle-btn" id="table-view-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="filter-tabs">
-        <div class="filter-tab active">All Stories</div>
-        <div class="filter-tab">Needs Work</div>
-        <div class="filter-tab">Good Quality</div>
-        <div class="filter-tab">Refined</div>
-      </div>
-      
-      <div class="filter-actions">
-        <div class="filter-group">
-          <select class="filter-select">
-            <option>Sort: INVEST Score ↓</option>
-            <option>Sort: INVEST Score ↑</option>
-            <option>Sort: Last Updated</option>
-            <option>Sort: ID</option>
-          </select>
-          <select class="filter-select">
-            <option>Source: All</option>
-            <option>Source: Jira</option>
-            <option>Source: Azure DevOps</option>
-            <option>Source: Manual</option>
-          </select>
-        </div>
-      </div>
-      
-      <table class="stories-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>User Story</th>
-            <th>INVEST Score</th>
-            <th>Status</th>
-            <th>Source</th>
-            <th>Last Updated</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
+
+        <!-- Card View (Default) -->
+        <div class="story-cards" id="card-view">
+          <!-- Card 1 -->
+          <div class="story-card">
+            <div class="story-card-tag jira">Jira</div>
+            <div class="story-card-header">
               <div class="story-id">US-001</div>
-            </td>
-            <td>
+            </div>
+            <div class="story-card-body">
               <div class="story-title">User can add products to cart</div>
-              <div class="story-description">As a customer, I want to be able to add products to my shopping cart...</div>
-            </td>
-            <td>
-              <div class="invest-score score-good">26/30</div>
-            </td>
-            <td>
-              <div class="status-badge status-good">Good</div>
-            </td>
-            <td>
-              <div class="source-badge">Jira</div>
-            </td>
-            <td>Feb 26, 2025</td>
-            <td>
-              <button class="btn btn-primary">Evaluate</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
+              <div class="story-description">
+                As a customer, I want to be able to add products to my shopping
+                cart so that I can purchase them later.
+              </div>
+            </div>
+            <div class="story-card-footer">
+              <div class="story-card-meta">
+                <span>Created: Feb 26, 2025</span>
+              </div>
+              <div class="story-card-actions">
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="story-card">
+            <div class="story-card-tag jira">Jira</div>
+            <div class="story-card-header">
               <div class="story-id">US-002</div>
-            </td>
-            <td>
+            </div>
+            <div class="story-card-body">
               <div class="story-title">User can view shopping cart</div>
-              <div class="story-description">As a customer, I want to be able to view items in my shopping cart...</div>
-            </td>
-            <td>
-              <div class="invest-score score-good">24/30</div>
-            </td>
-            <td>
-              <div class="status-badge status-good">Good</div>
-            </td>
-            <td>
-              <div class="source-badge">Jira</div>
-            </td>
-            <td>Feb 26, 2025</td>
-            <td>
-              <button class="btn btn-primary">Evaluate</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
+              <div class="story-description">
+                As a customer, I want to be able to view items in my shopping
+                cart so that I can review my selections before checkout.
+              </div>
+            </div>
+            <div class="story-card-footer">
+              <div class="story-card-meta">
+                <span>Created: Feb 26, 2025</span>
+              </div>
+              <div class="story-card-actions">
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="story-card">
+            <div class="story-card-tag jira">Jira</div>
+            <div class="story-card-header">
               <div class="story-id">US-003</div>
-            </td>
-            <td>
+            </div>
+            <div class="story-card-body">
               <div class="story-title">User can update cart quantities</div>
-              <div class="story-description">As a customer, I want to be able to update the quantity of items in my cart...</div>
-            </td>
-            <td>
-              <div class="invest-score score-fair">18/30</div>
-            </td>
-            <td>
-              <div class="status-badge status-needs-work">Needs Work</div>
-            </td>
-            <td>
-              <div class="source-badge">Jira</div>
-            </td>
-            <td>Feb 26, 2025</td>
-            <td>
-              <button class="btn btn-primary">Evaluate</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
+              <div class="story-description">
+                As a customer, I want to be able to update the quantity of items
+                in my cart so that I can adjust my order before checkout.
+              </div>
+            </div>
+            <div class="story-card-footer">
+              <div class="story-card-meta">
+                <span>Created: Feb 26, 2025</span>
+              </div>
+              <div class="story-card-actions">
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="story-card">
+            <div class="story-card-tag azure">Azure DevOps</div>
+            <div class="story-card-header">
               <div class="story-id">US-004</div>
-            </td>
-            <td>
+            </div>
+            <div class="story-card-body">
               <div class="story-title">User can remove items from cart</div>
-              <div class="story-description">As a customer, I want to be able to remove items from my cart...</div>
-            </td>
-            <td>
-              <div class="invest-score score-fair">16/30</div>
-            </td>
-            <td>
-              <div class="status-badge status-needs-work">Needs Work</div>
-            </td>
-            <td>
-              <div class="source-badge azure">Azure DevOps</div>
-            </td>
-            <td>Feb 25, 2025</td>
-            <td>
-              <button class="btn btn-primary">Evaluate</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
+              <div class="story-description">
+                As a customer, I want to be able to remove items from my cart so
+                that I can change my mind about purchases.
+              </div>
+            </div>
+            <div class="story-card-footer">
+              <div class="story-card-meta">
+                <span>Created: Feb 25, 2025</span>
+              </div>
+              <div class="story-card-actions">
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="story-card">
+            <div class="story-card-tag azure">Azure DevOps</div>
+            <div class="story-card-header">
               <div class="story-id">US-005</div>
-            </td>
-            <td>
+            </div>
+            <div class="story-card-body">
               <div class="story-title">User can proceed to checkout</div>
-              <div class="story-description">As a customer, I want to be able to proceed to checkout when I'm ready...</div>
-            </td>
-            <td>
-              <div class="invest-score score-poor">12/30</div>
-            </td>
-            <td>
-              <div class="status-badge status-poor">Poor</div>
-            </td>
-            <td>
-              <div class="source-badge azure">Azure DevOps</div>
-            </td>
-            <td>Feb 26, 2025</td>
-            <td>
-              <button class="btn btn-primary">Evaluate</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
+              <div class="story-description">
+                As a customer, I want to be able to proceed to checkout when I'm
+                ready to purchase the items in my cart.
+              </div>
+            </div>
+            <div class="story-card-footer">
+              <div class="story-card-meta">
+                <span>Created: Feb 26, 2025</span>
+              </div>
+              <div class="story-card-actions">
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="story-card">
+            <div class="story-card-tag manual">Manual</div>
+            <div class="story-card-header">
               <div class="story-id">US-006</div>
-            </td>
-            <td>
-              <div class="story-title">User can provide shipping information</div>
-              <div class="story-description">As a customer, I want to be able to enter my shipping information...</div>
-            </td>
-            <td>
-              <div class="invest-score score-poor">10/30</div>
-            </td>
-            <td>
-              <div class="status-badge status-poor">Poor</div>
-            </td>
-            <td>
-              <div class="source-badge manual">Manual</div>
-            </td>
-            <td>Feb 24, 2025</td>
-            <td>
-              <button class="btn btn-primary">Evaluate</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <div class="pagination">
-        <div class="page-item">Prev</div>
-        <div class="page-item active">1</div>
-        <div class="page-item">2</div>
-        <div class="page-item">3</div>
-        <div class="page-item">Next</div>
+            </div>
+            <div class="story-card-body">
+              <div class="story-title">
+                User can provide shipping information
+              </div>
+              <div class="story-description">
+                As a customer, I want to be able to enter my shipping
+                information so that my order can be delivered to me.
+              </div>
+            </div>
+            <div class="story-card-footer">
+              <div class="story-card-meta">
+                <span>Created: Feb 24, 2025</span>
+              </div>
+              <div class="story-card-actions">
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table View (Hidden by default) -->
+        <table class="stories-table" id="table-view" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User Story</th>
+              <th>Source</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="story-id">US-001</div>
+              </td>
+              <td>
+                <div class="story-title">User can add products to cart</div>
+                <div class="story-description">
+                  As a customer, I want to be able to add products to my
+                  shopping cart...
+                </div>
+              </td>
+              <td>
+                <div class="source-badge">Jira</div>
+              </td>
+              <td>Feb 26, 2025</td>
+              <td>
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="story-id">US-002</div>
+              </td>
+              <td>
+                <div class="story-title">User can view shopping cart</div>
+                <div class="story-description">
+                  As a customer, I want to be able to view items in my shopping
+                  cart...
+                </div>
+              </td>
+              <td>
+                <div class="source-badge">Jira</div>
+              </td>
+              <td>Feb 26, 2025</td>
+              <td>
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="story-id">US-003</div>
+              </td>
+              <td>
+                <div class="story-title">User can update cart quantities</div>
+                <div class="story-description">
+                  As a customer, I want to be able to update the quantity of
+                  items in my cart...
+                </div>
+              </td>
+              <td>
+                <div class="source-badge">Jira</div>
+              </td>
+              <td>Feb 26, 2025</td>
+              <td>
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="story-id">US-004</div>
+              </td>
+              <td>
+                <div class="story-title">User can remove items from cart</div>
+                <div class="story-description">
+                  As a customer, I want to be able to remove items from my
+                  cart...
+                </div>
+              </td>
+              <td>
+                <div class="source-badge azure">Azure DevOps</div>
+              </td>
+              <td>Feb 25, 2025</td>
+              <td>
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="story-id">US-005</div>
+              </td>
+              <td>
+                <div class="story-title">User can proceed to checkout</div>
+                <div class="story-description">
+                  As a customer, I want to be able to proceed to checkout when
+                  I'm ready...
+                </div>
+              </td>
+              <td>
+                <div class="source-badge azure">Azure DevOps</div>
+              </td>
+              <td>Feb 26, 2025</td>
+              <td>
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="story-id">US-006</div>
+              </td>
+              <td>
+                <div class="story-title">
+                  User can provide shipping information
+                </div>
+                <div class="story-description">
+                  As a customer, I want to be able to enter my shipping
+                  information...
+                </div>
+              </td>
+              <td>
+                <div class="source-badge manual">Manual</div>
+              </td>
+              <td>Feb 24, 2025</td>
+              <td>
+                <a href="user-story-detailView.html"
+                  ><button class="btn btn-evaluate">Evaluate</button></a
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <div class="page-item">Prev</div>
+          <div class="page-item active">1</div>
+          <div class="page-item">2</div>
+          <div class="page-item">3</div>
+          <div class="page-item">Next</div>
+        </div>
       </div>
     </div>
-  </div>
-</body>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // View toggle functionality
+        const cardViewBtn = document.getElementById("card-view-btn");
+        const tableViewBtn = document.getElementById("table-view-btn");
+        const cardView = document.getElementById("card-view");
+        const tableView = document.getElementById("table-view");
+
+        cardViewBtn.addEventListener("click", function () {
+          cardView.style.display = "grid";
+          tableView.style.display = "none";
+          cardViewBtn.classList.add("active");
+          tableViewBtn.classList.remove("active");
+        });
+
+        tableViewBtn.addEventListener("click", function () {
+          cardView.style.display = "none";
+          tableView.style.display = "table";
+          cardViewBtn.classList.remove("active");
+          tableViewBtn.classList.add("active");
+        });
+
+        // Filter tabs functionality
+        const filterTabs = document.querySelectorAll(".filter-tab");
+
+        filterTabs.forEach((tab) => {
+          tab.addEventListener("click", function () {
+            filterTabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+
+        // Evaluate buttons functionality
+        const evaluateButtons = document.querySelectorAll(".btn-evaluate");
+
+        evaluateButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const storyId =
+              this.closest(".story-card")?.querySelector(".story-id")
+                ?.textContent ||
+              this.closest("tr")?.querySelector(".story-id")?.textContent;
+
+            if (storyId) {
+              alert(
+                `Evaluating story ${storyId}. This would navigate to the story evaluation page.`
+              );
+              // In a real app, this would navigate to the story evaluation page
+              // window.location.href = `/stories/${storyId}/evaluate`;
+            }
+          });
+        });
+      });
+    </script>
+  </body>
 </html>
