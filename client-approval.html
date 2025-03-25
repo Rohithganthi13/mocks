@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Programs - Client Approval</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #4338ca;
+            --secondary: #f3f4f6;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --highlight: #fef3c7;
+            --highlight-border: #fbbf24;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        
+        .intro-text {
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            text-align: left;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .program-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+        
+        .program-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+        
+        .program-number {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .program-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        .program-description {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .input-output-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .input-section, .output-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+        }
+        
+        .section-title svg {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .input-item, .output-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .prompt-box {
+            background-color: var(--highlight);
+            border: 1px solid var(--highlight-border);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .prompt-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .prompt-title svg {
+            margin-right: 0.5rem;
+            color: var(--warning);
+        }
+        
+        .input-box {
+            background-color: white;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .output-preview {
+            background-color: var(--secondary);
+            border-radius: 4px;
+            padding: 1rem;
+            min-height: 100px;
+        }
+        
+        .approval-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .approval-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        
+        .approval-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .approval-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .approve-btn {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .approve-btn:hover {
+            background-color: #0ca678;
+        }
+        
+        .reject-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .reject-btn:hover {
+            background-color: #dc2626;
+        }
+        
+        .feedback-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        textarea.feedback-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-feedback {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .submit-feedback:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .invest-score {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .score-item {
+            background-color: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .score-item span {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .final-approval {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-top: 3rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .final-approval h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .signature-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .signature-box {
+            flex: 1;
+            max-width: 45%;
+            padding: 1rem;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid var(--text);
+            height: 40px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-output-container {
+                flex-direction: column;
+            }
+            
+            .signature-section {
+                flex-direction: column;
+            }
+            
+            .signature-box {
+                max-width: 100%;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI-Related Programs QMentisAI</h1>
+            <p class="subtitle">Program Overview and Approval Document for AI Programs</p>
+        </header>
+        
+        <div class="intro-text">
+            <p><strong>Purpose of this document:</strong> This document outlines the six AI programs we propose to develop for your content refinement needs. Each program includes the specific AI prompts we'll use, the required inputs, and sample outputs to demonstrate functionality.</p>
+            <p><strong>What we need from you:</strong> Please review each program, its prompts, and expected outputs. Your approval will allow us to proceed with development of these AI solutions tailored to your requirements.</p>
+        </div>
+        
+        <!-- Program 1 -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-number">1</div>
+                <h2 class="program-title">Text, Voice and Video to Text Extraction</h2>
+            </div>
+            
+            <p class="program-description">
+                This AI program extracts text content from various media formats including documents, audio recordings, and video files.
+            </p>
+            
+            <div class="prompt-box">
+                <div class="prompt-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    AI Prompt We'll Use
+                </div>
+                <p>"Extract all text content from the provided {media_type}. Maintain original formatting where possible. Identify speakers in audio/video content. Include timestamps for audio/video content every 30 seconds. Ignore background noise and music. Focus on clear speech and visible text."</p>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="input-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Required Inputs
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Media Type:</strong> 
+                            <p>One of: "Text Document", "Voice Recording", or "Video File"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>File:</strong> 
+                            <p>The actual media file to be processed (PDF, DOCX, MP3, MP4, etc.)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Optional Parameters:</strong>
+                            <p>Language: Default "English" (for better accuracy in non-English content)</p>
+                            <p>Timestamp Frequency: Default "30 seconds" (for audio/video)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Sample Output
+                    </div>
+                    
+                    <div class="output-item">
+                        <div class="output-preview">
+                            <p><strong>[00:00]</strong> <em>Speaker 1 (CEO):</em> "Thank you everyone for joining our quarterly meeting. Today we'll be discussing three main topics: first, our Q2 financial results; second, the upcoming product launch scheduled for September; and third, our expansion plans for the European market."</p>
+                            
+                            <p><strong>[00:30]</strong> <em>Speaker 1 (CEO):</em> "Let's start with the financial results. I'm pleased to report that we've exceeded our revenue targets by 12% this quarter, with particularly strong performance in our enterprise segment..."</p>
+                            
+                            <p><strong>[01:00]</strong> <em>Speaker 2 (CFO):</em> "If I could add to that, our operating margins have improved by 3 percentage points compared to Q1, primarily due to the cost optimization initiatives we implemented in March..."</p>
+                            
+                            <p><em>[Extracted text continues for the full recording]</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="approval-title">Program 1 Approval</h3>
+                <div class="approval-options">
+                    <button class="approval-btn approve-btn" onclick="approveProgram(1)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="approval-btn reject-btn" onclick="rejectProgram(1)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Needs Changes
+                    </button>
+                </div>
+                <div id="feedback-form-1" style="display: none;">
+                    <textarea class="feedback-input" placeholder="Please provide your feedback or change requests for this AI program..."></textarea>
+                    <button class="submit-feedback" onclick="submitFeedback(1)">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Program 2 -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-number">2</div>
+                <h2 class="program-title">User Stories: INVEST Score Calculator</h2>
+            </div>
+            
+            <p class="program-description">
+                This AI program evaluates user stories against the INVEST criteria (Independent, Negotiable, Valuable, Estimable, Small, Testable) to ensure quality.
+            </p>
+            
+            <div class="prompt-box">
+                <div class="prompt-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    AI Prompt We'll Use
+                </div>
+                <p>"Evaluate the provided user story against the INVEST criteria (Independent, Negotiable, Valuable, Estimable, Small, Testable). For each criterion, provide a score from 1-5 where 1 is poor and 5 is excellent. Include specific recommendations for improving any criteria that score below 4. Consider the user story, description, and acceptance criteria in your evaluation."</p>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="input-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Required Inputs
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>User Story:</strong>
+                            <p>The user story in standard format: "As a [role], I want [feature] so that [benefit]"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Description:</strong>
+                            <p>Detailed description of the user story</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Acceptance Criteria:</strong>
+                            <p>List of conditions that must be met for the story to be considered complete</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Sample Output
+                    </div>
+                    
+                    <div class="output-item">
+                        <div class="output-preview">
+                            <div class="invest-score">
+                                <div class="score-item"><span>I</span> Independent: 4/5</div>
+                                <div class="score-item"><span>N</span> Negotiable: 3/5</div>
+                                <div class="score-item"><span>V</span> Valuable: 5/5</div>
+                                <div class="score-item"><span>E</span> Estimable: 4/5</div>
+                                <div class="score-item"><span>S</span> Small: 3/5</div>
+                                <div class="score-item"><span>T</span> Testable: 4/5</div>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <strong>Overall Score: 23/30</strong> (Good)
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <strong>Recommendations:</strong>
+                                <ul>
+                                    <li><strong>Negotiable (3/5):</strong> The story contains some implementation details that limit negotiability. Consider removing specific technical implementation requirements and focus on the business need.</li>
+                                    <li><strong>Small (3/5):</strong> This story may be too large for a single sprint. Consider breaking it down into smaller stories, such as separating the "add payment method" functionality from the "manage payment method" functionality.</li>
+                                    <li><strong>Testable (4/5):</strong> Add more specific acceptance criteria for validation requirements and error handling scenarios.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="approval-title">Program 2 Approval</h3>
+                <div class="approval-options">
+                    <button class="approval-btn approve-btn" onclick="approveProgram(2)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="approval-btn reject-btn" onclick="rejectProgram(2)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Needs Changes
+                    </button>
+                </div>
+                <div id="feedback-form-2" style="display: none;">
+                    <textarea class="feedback-input" placeholder="Please provide your feedback or change requests for this AI program..."></textarea>
+                    <button class="submit-feedback" onclick="submitFeedback(2)">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Program 3 -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-number">3</div>
+                <h2 class="program-title">User Story Refinement</h2>
+            </div>
+            
+            <p class="program-description">
+                This AI program refines user stories based on INVEST scores and additional information to improve quality and clarity.
+            </p>
+            
+            <div class="prompt-box">
+                <div class="prompt-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    AI Prompt We'll Use
+                </div>
+                <p>"Refine the provided user story based on its INVEST score analysis and any additional information provided. Improve the areas that scored lowest in the INVEST evaluation. Create a refined user story that follows the format 'As a [role], I want [feature] so that [benefit]' with a detailed description and comprehensive acceptance criteria. Also generate a business flow document that outlines the user journey for this story."</p>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="input-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Required Inputs
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Prompt:</strong>
+                            <p>Specific instructions for refining the user story (optional)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Existing User Story:</strong>
+                            <p>The original user story to be refined</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Description:</strong>
+                            <p>Original description of the user story</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Acceptance Criteria:</strong>
+                            <p>Original acceptance criteria</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Additional Information:</strong>
+                            <p>Any additional context or requirements (optional)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>INVEST Score:</strong>
+                            <p>Results from Program 2 (optional)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Sample Output
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Refined User Story</strong>
+                        <div class="output-preview">
+                            <p><strong>As a</strong> customer, <strong>I want</strong> to be able to save and manage my payment methods securely <strong>so that</strong> I can complete future purchases more quickly.</p>
+                            
+                            <p><strong>Description:</strong><br>
+                            The feature allows customers to securely store their payment information (credit cards, PayPal, etc.) for future use. The system will encrypt all payment data and only show the last 4 digits of credit cards for identification. Customers will be able to add, edit, and delete their saved payment methods through their account settings.</p>
+                            
+                            <p><strong>Acceptance Criteria:</strong></p>
+                            <ol>
+                                <li>Customer can add a new payment method with required fields (card number, expiration date, CVV, name on card)</li>
+                                <li>System validates payment method information before saving</li>
+                                <li>Customer can view a list of their saved payment methods showing only last 4 digits of credit cards</li>
+                                <li>Customer can edit the billing address and expiration date of existing payment methods</li>
+                                <li>Customer can delete a saved payment method</li>
+                                <li>Customer can select a saved payment method during checkout</li>
+                                <li>System securely encrypts payment information using industry-standard encryption</li>
+                                <li>System displays appropriate error messages for validation failures</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Business Flow Document</strong>
+                        <div class="output-preview">
+                            <p><strong>Payment Method Management Flow</strong></p>
+                            <ol>
+                                <li>Customer navigates to account settings</li>
+                                <li>Customer selects "Payment Methods"</li>
+                                <li>System displays existing payment methods (if any)</li>
+                                <li>Customer can add new payment method:
+                                    <ul>
+                                        <li>Enter payment details</li>
+                                        <li>System validates information</li>
+                                        <li>System encrypts and stores information</li>
+                                        <li>System confirms successful addition</li>
+                                    </ul>
+                                </li>
+                                <li>Customer can edit or delete existing methods</li>
+                                <li>During checkout, customer can select from saved payment methods</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="approval-title">Program 3 Approval</h3>
+                <div class="approval-options">
+                    <button class="approval-btn approve-btn" onclick="approveProgram(3)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="approval-btn reject-btn" onclick="rejectProgram(3)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Needs Changes
+                    </button>
+                </div>
+                <div id="feedback-form-3" style="display: none;">
+                    <textarea class="feedback-input" placeholder="Please provide your feedback or change requests for this AI program..."></textarea>
+                    <button class="submit-feedback" onclick="submitFeedback(3)">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Program 4 -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-number">4</div>
+                <h2 class="program-title">User Story Refinement with Feedback</h2>
+            </div>
+            
+            <p class="program-description">
+                This AI program further refines user stories based on stakeholder feedback and comments to ensure alignment with business needs.
+            </p>
+            
+            <div class="prompt-box">
+                <div class="prompt-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    AI Prompt We'll Use
+                </div>
+                <p>"Further refine the provided user story by incorporating the stakeholder feedback. Analyze the feedback for key requirements, concerns, and priorities. Update the user story, description, and acceptance criteria to address all stakeholder feedback. Highlight the specific changes made based on feedback. Also update the business flow document to reflect these changes."</p>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="input-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Required Inputs
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Prompt:</strong>
+                            <p>Specific instructions for refining the user story (optional)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Existing User Story:</strong>
+                            <p>The refined user story from Program 3</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>User Comment 1:</strong>
+                            <p>Feedback from first stakeholder</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>User Comment 2:</strong>
+                            <p>Feedback from second stakeholder (optional)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Sample Output
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Refined User Story with Feedback</strong>
+                        <div class="output-preview">
+                            <p><strong>As a</strong> customer, <strong>I want</strong> to be able to save and manage my payment methods securely (up to 5) <strong>so that</strong> I can complete future purchases more quickly while maintaining security.</p>
+                            
+                            <p><strong>Description:</strong><br>
+                            The feature allows customers to securely store up to 5 payment methods (credit cards, PayPal, etc.) for future use. The system will encrypt all payment data using AES-256 encryption in compliance with PCI-DSS standards and only show the last 4 digits of credit cards for identification. Customers will be able to add, edit, and delete their saved payment methods through their account settings. For security purposes, customers will receive email notifications when payment methods are added, edited, or removed, and the system will automatically log out after 5 minutes of inactivity when viewing payment information.</p>
+                            
+                            <p><strong>Acceptance Criteria:</strong></p>
+                            <ol>
+                                <li>Customer can add a new payment method with required fields (card number, expiration date, CVV, name on card)</li>
+                                <li>System validates payment method information before saving</li>
+                                <li>System limits customers to a maximum of 5 saved payment methods</li>
+                                <li>Customer can view a list of their saved payment methods showing only last 4 digits of credit cards</li>
+                                <li>Customer can edit the billing address and expiration date of existing payment methods</li>
+                                <li>Customer can delete a saved payment method</li>
+                                <li>Customer can select a saved payment method during checkout</li>
+                                <li>System securely encrypts payment information using AES-256 encryption in compliance with PCI-DSS standards</li>
+                                <li>System sends email notifications to customers when payment methods are added, edited, or removed</li>
+                                <li>System automatically logs out after 5 minutes of inactivity when viewing payment information</li>
+                                <li>System displays appropriate error messages for validation failures</li>
+                            </ol>
+                            
+                            <p><strong>Changes Based on Feedback:</strong></p>
+                            <ul>
+                                <li>Limited number of payment methods to 5 per customer</li>
+                                <li>Added email notifications for security</li>
+                                <li>Specified AES-256 encryption standard for PCI-DSS compliance</li>
+                                <li>Added automatic timeout/logout requirement</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Business Flow Document</strong>
+                        <div class="output-preview">
+                            <p><strong>Payment Method Management Flow (Updated)</strong></p>
+                            <ol>
+                                <li>Customer navigates to account settings</li>
+                                <li>Customer selects "Payment Methods"</li>
+                                <li>System displays existing payment methods (if any, up to 5)</li>
+                                <li>Customer can add new payment method:
+                                    <ul>
+                                        <li>Enter payment details</li>
+                                        <li>System validates information</li>
+                                        <li>System encrypts and stores information using AES-256</li>
+                                        <li>System sends confirmation email</li>
+                                        <li>System confirms successful addition</li>
+                                    </ul>
+                                </li>
+                                <li>Customer can edit existing methods:
+                                    <ul>
+                                        <li>Update payment details</li>
+                                        <li>System validates and stores changes</li>
+                                        <li>System sends notification email</li>
+                                    </ul>
+                                </li>
+                                <li>Customer can delete existing methods:
+                                    <ul>
+                                        <li>Confirm deletion</li>
+                                        <li>System removes payment method</li>
+                                        <li>System sends notification email</li>
+                                    </ul>
+                                </li>
+                                <li>System automatically logs out after 5 minutes of inactivity</li>
+                                <li>During checkout, customer can select from saved payment methods</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="approval-title">Program 4 Approval</h3>
+                <div class="approval-options">
+                    <button class="approval-btn approve-btn" onclick="approveProgram(4)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="approval-btn reject-btn" onclick="rejectProgram(4)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Needs Changes
+                    </button>
+                </div>
+                <div id="feedback-form-4" style="display: none;">
+                    <textarea class="feedback-input" placeholder="Please provide your feedback or change requests for this AI program..."></textarea>
+                    <button class="submit-feedback" onclick="submitFeedback(4)">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Program 5 -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-number">5</div>
+                <h2 class="program-title">Bug Report Refinement</h2>
+            </div>
+            
+            <p class="program-description">
+                This AI program enhances bug reports with additional details, reproduction steps, and severity assessments to improve developer understanding.
+            </p>
+            
+            <div class="prompt-box">
+                <div class="prompt-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    AI Prompt We'll Use
+                </div>
+                <p>"Enhance the provided bug report with additional details and technical analysis. Create a comprehensive bug report that includes: a clear title, detailed description, complete reproduction steps, expected vs. actual behavior, environment details, severity assessment with business impact, and possible causes. Also generate a technical document with debugging information and recommended fixes for developers."</p>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="input-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Required Inputs
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Prompt:</strong>
+                            <p>Specific instructions for refining the bug report (optional)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Bug Title:</strong>
+                            <p>Brief description of the bug</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Bug Description:</strong>
+                            <p>Initial description of the bug</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Steps to Reproduce:</strong>
+                            <p>Initial steps to reproduce the bug</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Expected Behavior:</strong>
+                            <p>What should happen when steps are followed correctly</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Actual Behavior:</strong>
+                            <p>What actually happens when steps are followed</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Environment:</strong>
+                            <p>Browser, OS, device information</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Severity:</strong>
+                            <p>Initial severity assessment (Critical, High, Medium, Low)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Sample Output
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Refined Bug Report</strong>
+                        <div class="output-preview">
+                            <p><strong>Bug ID:</strong> BUG-2023-05-15-001</p>
+                            <p><strong>Title:</strong> Payment processing fails when using saved credit cards on mobile devices</p>
+                            
+                            <p><strong>Description:</strong><br>
+                            When customers attempt to complete a purchase using a previously saved credit card on mobile devices, the payment processing fails with a generic error message. This issue only occurs on mobile devices (iOS and Android) and does not affect desktop browsers. The problem appears to be related to the way mobile browsers handle the secure token validation.</p>
+                            
+                            <p><strong>Steps to Reproduce:</strong></p>
+                            <ol>
+                                <li>Log in to a customer account with saved payment methods</li>
+                                <li>Add items to cart</li>
+                                <li>Proceed to checkout</li>
+                                <li>Select a previously saved credit card</li>
+                                <li>Attempt to complete purchase</li>
+                            </ol>
+                            
+                            <p><strong>Expected Behavior:</strong><br>
+                            Payment should process successfully and order confirmation should be displayed.</p>
+                            
+                            <p><strong>Actual Behavior:</strong><br>
+                            Payment fails with error message: "We're sorry, but we couldn't process your payment. Please try again or use a different payment method." No order is created and customer remains on the checkout page.</p>
+                            
+                            <p><strong>Environment:</strong></p>
+                            <ul>
+                                <li>Devices: iPhone 13 (iOS 15.4), Samsung Galaxy S21 (Android 12)</li>
+                                <li>Browsers: Safari, Chrome</li>
+                                <li>App Version: 2.4.1</li>
+                                <li>Network: Tested on both WiFi and cellular data</li>
+                            </ul>
+                            
+                            <p><strong>Severity:</strong> High</p>
+                            
+                            <p><strong>Impact:</strong><br>
+                            This issue affects approximately 45% of our transactions as mobile purchases with saved payment methods are common. Customer support has reported an increase in abandoned carts and support tickets related to this issue.</p>
+                            
+                            <p><strong>Possible Causes:</strong></p>
+                            <ul>
+                                <li>Mobile browser security restrictions</li>
+                                <li>Token validation timeout</li>
+                                <li>Incompatibility with the payment gateway's mobile API</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Technical Document</strong>
+                        <div class="output-preview">
+                            <p><strong>Technical Analysis:</strong></p>
+                            <p>Initial investigation suggests the issue is related to the way the secure token is handled in the mobile environment. The token appears to expire before the payment gateway can validate it, possibly due to slower processing times on mobile devices.</p>
+                            
+                            <p><strong>Debugging Information:</strong></p>
+                            <ul>
+                                <li>Console errors: "SecurityTokenValidationError: Token expired or invalid"</li>
+                                <li>Network logs show a 403 response from the payment gateway API</li>
+                                <li>Response payload contains error code: ERR_TOKEN_VALIDATION_FAILED</li>
+                            </ul>
+                            
+                            <p><strong>Recommended Fix:</strong></p>
+                            <ol>
+                                <li>Increase token expiration time for mobile devices</li>
+                                <li>Implement token refresh mechanism before submission</li>
+                                <li>Add specific error handling for mobile environments</li>
+                                <li>Consider implementing the payment gateway's mobile-specific SDK</li>
+                            </ol>
+                            
+                            <p><strong>Related Components:</strong></p>
+                            <ul>
+                                <li>PaymentProcessor.js</li>
+                                <li>TokenManager.js</li>
+                                <li>CheckoutForm.js</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="approval-title">Program 5 Approval</h3>
+                <div class="approval-options">
+                    <button class="approval-btn approve-btn" onclick="approveProgram(5)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="approval-btn reject-btn" onclick="rejectProgram(5)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Needs Changes
+                    </button>
+                </div>
+                <div id="feedback-form-5" style="display: none;">
+                    <textarea class="feedback-input" placeholder="Please provide your feedback or change requests for this AI program..."></textarea>
+                    <button class="submit-feedback" onclick="submitFeedback(5)">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Program 6 -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-number">6</div>
+                <h2 class="program-title">Bug Report Refinement with Feedback</h2>
+            </div>
+            
+            <p class="program-description">
+                This AI program further enhances bug reports with stakeholder feedback to improve clarity and prioritization.
+            </p>
+            
+            <div class="prompt-box">
+                <div class="prompt-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    AI Prompt We'll Use
+                </div>
+                <p>"Further enhance the provided bug report by incorporating stakeholder feedback. Analyze the feedback to update severity, impact assessment, and prioritization. Add workarounds if mentioned in feedback. Update the technical document with more detailed fix recommendations and rollback plans if necessary. Include direct stakeholder quotes in a dedicated section."</p>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="input-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Required Inputs
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Prompt:</strong>
+                            <p>Specific instructions for refining the bug report (optional)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>Bug Report:</strong>
+                            <p>The refined bug report from Program 5</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>User Comment 1:</strong>
+                            <p>Feedback from first stakeholder</p>
+                        </div>
+                    </div>
+                    
+                    <div class="input-item">
+                        <div class="input-box">
+                            <strong>User Comment 2:</strong>
+                            <p>Feedback from second stakeholder (optional)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <div class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Sample Output
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Refined Bug Report with Feedback</strong>
+                        <div class="output-preview">
+                            <p><strong>Bug ID:</strong> BUG-2023-05-15-001</p>
+                            <p><strong>Title:</strong> Payment processing fails when using saved credit cards on mobile devices</p>
+                            <p><strong>Priority:</strong> CRITICAL (Upgraded from High)</p>
+                            
+                            <p><strong>Description:</strong><br>
+                            When customers attempt to complete a purchase using a previously saved credit card on mobile devices, the payment processing fails with a generic error message. This issue only occurs on mobile devices (iOS and Android) and does not affect desktop browsers. The problem appears to be related to the way mobile browsers handle the secure token validation. This issue began after the deployment of version 2.4.0 on May 10, 2023.</p>
+                            
+                            <p><strong>Steps to Reproduce:</strong></p>
+                            <ol>
+                                <li>Log in to a customer account with saved payment methods</li>
+                                <li>Add items to cart</li>
+                                <li>Proceed to checkout</li>
+                                <li>Select a previously saved credit card</li>
+                                <li>Attempt to complete purchase</li>
+                            </ol>
+                            
+                            <p><strong>Expected Behavior:</strong><br>
+                            Payment should process successfully and order confirmation should be displayed.</p>
+                            
+                            <p><strong>Actual Behavior:</strong><br>
+                            Payment fails with error message: "We're sorry, but we couldn't process your payment. Please try again or use a different payment method." No order is created and customer remains on the checkout page.</p>
+                            
+                            <p><strong>Environment:</strong></p>
+                            <ul>
+                                <li>Devices: iPhone 13 (iOS 15.4), Samsung Galaxy S21 (Android 12), iPhone 12 (iOS 16), Google Pixel 6 (Android 13)</li>
+                                <li>Browsers: Safari, Chrome, Firefox Mobile</li>
+                                <li>App Version: 2.4.1</li>
+                                <li>Network: Tested on both WiFi and cellular data</li>
+                                <li>Reproducible: 100% of the time on all tested devices</li>
+                            </ul>
+                            
+                            <p><strong>Impact:</strong><br>
+                            This issue affects approximately 65% of our transactions (updated from 45%) as mobile purchases with saved payment methods are common. Customer support has reported a 32% increase in abandoned carts and a 47% increase in support tickets related to this issue. Revenue impact is estimated at $25,000 per day.</p>
+                            
+                            <p><strong>Possible Causes:</strong></p>
+                            <ul>
+                                <li>Mobile browser security restrictions</li>
+                                <li>Token validation timeout</li>
+                                <li>Incompatibility with the payment gateway's mobile API</li>
+                                <li>Recent changes to the token generation logic in version 2.4.0</li>
+                            </ul>
+                            
+                            <p><strong>Workaround:</strong><br>
+                            Customers can complete purchases by:
+                            <ol>
+                                <li>Using a desktop browser instead of mobile</li>
+                                <li>Re-entering their payment information instead of using saved cards</li>
+                                <li>Using the alternative PayPal checkout option</li>
+                            </ol>
+                            </p>
+                            
+                            <p><strong>Stakeholder Feedback:</strong></p>
+                            <ul>
+                                <li><strong>Product Manager:</strong> "This is causing significant revenue loss and needs to be fixed ASAP. Consider rolling back to version 2.3.9 if a fix cannot be deployed within 24 hours."</li>
+                                <li><strong>Customer Support Lead:</strong> "Support team is overwhelmed with tickets about this issue. We need a clear workaround to communicate to customers while the fix is being developed."</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="output-item">
+                        <strong>Technical Document</strong>
+                        <div class="output-preview">
+                            <p><strong>Technical Analysis (Updated):</strong></p>
+                            <p>Investigation confirms the issue is related to changes in the token generation and validation process introduced in version 2.4.0. Specifically, the token expiration time was reduced from 5 minutes to 2 minutes to improve security, but this change did not account for slower processing times on mobile devices.</p>
+                            
+                            <p><strong>Debugging Information:</strong></p>
+                            <ul>
+                                <li>Console errors: "SecurityTokenValidationError: Token expired or invalid"</li>
+                                <li>Network logs show a 403 response from the payment gateway API</li>
+                                <li>Response payload contains error code: ERR_TOKEN_VALIDATION_FAILED</li>
+                                <li>Token generation timestamp to submission time on mobile averages 2.3 minutes</li>
+                            </ul>
+                            
+                            <p><strong>Recommended Fix (Prioritized):</strong></p>
+                            <ol>
+                                <li><strong>Immediate (24 hours):</strong> Increase token expiration time back to 5 minutes</li>
+                                <li><strong>Short-term (3 days):</strong> Implement dynamic token refresh before submission</li>
+                                <li><strong>Medium-term (1 week):</strong> Add specific error handling for mobile environments</li>
+                                <li><strong>Long-term (2 weeks):</strong> Implement the payment gateway's mobile-specific SDK</li>
+                            </ol>
+                            
+                            <p><strong>Related Components:</strong></p>
+                            <ul>
+                                <li>PaymentProcessor.js (primary issue in tokenExpirationConfig)</li>
+                                <li>TokenManager.js</li>
+                                <li>CheckoutForm.js</li>
+                                <li>MobileDetection.js</li>
+                            </ul>
+                            
+                            <p><strong>Rollback Plan:</strong></p>
+                            <p>If immediate fix cannot be deployed within 24 hours, roll back to version 2.3.9 using the following procedure:</p>
+                            <ol>
+                                <li>Execute rollback script: ./rollback.sh 2.3.9</li>
+                                <li>Verify deployment in staging environment</li>
+                                <li>Deploy to production during low-traffic window (3:00 AM EST)</li>
+                                <li>Monitor error rates for 1 hour post-deployment</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="approval-title">Program 6 Approval</h3>
+                <div class="approval-options">
+                    <button class="approval-btn approve-btn" onclick="approveProgram(6)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Approve
+                    </button>
+                    <button class="approval-btn reject-btn" onclick="rejectProgram(6)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Needs Changes
+                    </button>
+                </div>
+                <div id="feedback-form-6" style="display: none;">
+                    <textarea class="feedback-input" placeholder="Please provide your feedback or change requests for this AI program..."></textarea>
+                    <button class="submit-feedback" onclick="submitFeedback(6)">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Final Approval Section -->
+        <div class="final-approval">
+            <h2>Final Approval</h2>
+            <p>By signing below, you confirm that you have reviewed and approved the AI prompts, required inputs, and expected outputs for all six AI programs described in this document.</p>
+            
+            <div class="signature-section">
+                <div class="signature-box">
+                    <p><strong>Client Approval</strong></p>
+                    <div class="signature-line"></div>
+                    <p>Name: ______________________________</p>
+                    <p>Title: ______________________________</p>
+                    <p>Date: ______________________________</p>
+                </div>
+                
+                <div class="signature-box">
+                    <p><strong>Provider Approval</strong></p>
+                    <div class="signature-line"></div>
+                    <p>Name: ______________________________</p>
+                    <p>Title: ______________________________</p>
+                    <p>Date: ______________________________</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 AI-Powered Content Refinement Platform | Client Approval Document</p>
+        </div>
+    </div>
+
+    <script>
+        function approveProgram(programNumber) {
+            alert(`Program ${programNumber} approved!`);
+            document.getElementById(`feedback-form-${programNumber}`).style.display = 'none';
+        }
+        
+        function rejectProgram(programNumber) {
+            document.getElementById(`feedback-form-${programNumber}`).style.display = 'block';
+        }
+        
+        function submitFeedback(programNumber) {
+            const feedbackText = document.querySelector(`#feedback-form-${programNumber} textarea`).value;
+            if (feedbackText.trim() === '') {
+                alert('Please provide feedback before submitting.');
+                return;
+            }
+            
+            alert(`Feedback for Program ${programNumber} submitted successfully!`);
+            document.getElementById(`feedback-form-${programNumber}`).style.display = 'none';
+        }
+    </script>
+</body>
+</html>
