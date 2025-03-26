@@ -1,653 +1,899 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QMentisAI - Refined Bug Report</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f7fb;
-      color: #333;
-    }
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .header {
-      background-color: #3377FF;
-      color: white;
-      padding: 0.5rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .logo-img {
-      height: 32px;
-      margin-right: 10px;
-    }
-    .user-menu {
-      display: flex;
-      align-items: center;
-    }
-    .user-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 16px;
-      background-color: rgba(255, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 20px;
-      color: white;
-    }
-    .main-content {
-      flex: 1;
-      padding: 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      width: 100%;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      margin-top: 1.5rem;
-    }
-    .breadcrumb {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 1rem;
-    }
-    .breadcrumb a {
-      color: #3377FF;
-      text-decoration: none;
-    }
-    .breadcrumb a:hover {
-      text-decoration: underline;
-    }
-    .version-tabs {
-      display: flex;
-      border-bottom: 1px solid #eee;
-      margin-bottom: 1.5rem;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      padding: 0.5rem;
-      align-items: center;
-    }
-    .version-tab-group {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-    .version-tab {
-      padding: 0.5rem 1rem;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-right: 0.5rem;
-      margin-bottom: 0.25rem;
-    }
-    .version-tab.active {
-      background-color: #3377FF;
-      color: white;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 14px;
-    }
-    .btn-primary {
-      background-color: #3377FF;
-      color: white;
-    }
-    .btn-primary:hover {
-      background-color: #2a5fc9;
-    }
-    .btn-secondary {
-      background-color: #38d9a9;
-      color: white;
-    }
-    .btn-secondary:hover {
-      background-color: #20c997;
-    }
-    .btn-outline {
-      background-color: transparent;
-      border: 1px solid #ddd;
-      color: #333;
-    }
-    .btn-outline:hover {
-      background-color: #f5f7fb;
-    }
-    .bug-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      color: #333;
-    }
-    .section {
-      margin-bottom: 1.5rem;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .section-title {
-      font-weight: 600;
-      padding: 1rem;
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .section-content {
-      padding: 1rem;
-    }
-    .bug-description {
-      margin-bottom: 0.5rem;
-    }
-    .bug-meta {
-      font-size: 14px;
-      color: #666;
-    }
-    .bug-meta-item {
-      margin-right: 1rem;
-    }
-    .steps-list {
-      list-style-type: decimal;
-      padding-left: 1.5rem;
-      margin: 0;
-    }
-    .steps-item {
-      margin-bottom: 0.5rem;
-    }
-    .improvement-header {
-      margin-top: 2rem;
-      margin-bottom: 1.5rem;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 0.5rem;
-    }
-    .improvement-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: #333;
-    }
-    .improvement-subtitle {
-      font-size: 14px;
-      color: #666;
-      margin-top: 0.5rem;
-    }
-    .improvement-summary {
-      background-color: #ebfbee;
-      border: 1px solid #d3f9d8;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .improvement-summary-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .improvement-list {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
-    .improvement-item {
-      margin-bottom: 0.5rem;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-    .improvement-item:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: #2b8a3e;
-      font-weight: bold;
-    }
-    .action-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
-    .action-buttons-right {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .version-history {
-      margin-bottom: 1.5rem;
-    }
-    .version-history-title {
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    .version-history-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .version-history-table th,
-    .version-history-table td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-    .version-history-table th {
-      font-weight: 600;
-      color: #666;
-      background-color: #f8f9fa;
-    }
-    .view-link {
-      color: #3377FF;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .view-link:hover {
-      text-decoration: underline;
-    }
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-    .badge-critical {
-      background-color: rgba(224, 49, 49, 0.1);
-      color: #e03131;
-    }
-    .badge-high {
-      background-color: rgba(247, 103, 7, 0.1);
-      color: #f76707;
-    }
-    .badge-medium {
-      background-color: rgba(255, 169, 77, 0.1);
-      color: #f59f00;
-    }
-    .badge-low {
-      background-color: rgba(56, 217, 169, 0.1);
-      color: #099268;
-    }
-    .comparison-view {
-      margin-bottom: 1.5rem;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .comparison-header {
-      display: flex;
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #eee;
-    }
-    .comparison-tab {
-      flex: 1;
-      padding: 1rem;
-      text-align: center;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .comparison-tab.active {
-      background-color: white;
-      border-bottom: 2px solid #3377FF;
-    }
-    .comparison-content {
-      display: none;
-      padding: 1rem;
-    }
-    .comparison-content.active {
-      display: block;
-    }
-    .diff-view {
-      display: flex;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .diff-column {
-      flex: 1;
-      padding: 1rem;
-    }
-    .diff-column:first-child {
-      border-right: 1px solid #eee;
-    }
-    .diff-header {
-      font-weight: 600;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .diff-content {
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .diff-added {
-      background-color: #ebfbee;
-      padding: 0.25rem;
-      border-radius: 4px;
-    }
-    .diff-removed {
-      background-color: #fff5f5;
-      padding: 0.25rem;
-      border-radius: 4px;
-      text-decoration: line-through;
-    }
-    .version-select {
-      padding: 0.5rem;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      background-color: white;
-      font-size: 14px;
-      min-width: 150px;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      background-color: white;
-      margin: 10% auto;
-      padding: 2rem;
-      border-radius: 8px;
-      max-width: 600px;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    .modal-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    .modal-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .form-label {
-      font-weight: 500;
-      font-size: 14px;
-    }
-    .form-input {
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    .form-textarea {
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      min-height: 100px;
-      resize: vertical;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="app-container">
-    <div class="header">
-      <div class="logo">
-        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png" alt="QMentisAI Logo" class="logo-img">
-        QMentisAI
-      </div>
-      <div class="user-menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"></path>
-          <path d="M16 16 21 21"></path>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 16px;">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </svg>
-        <div class="user-icon">JD</div>
-      </div>
-    </div>
-    
-    <div class="main-content">
-      <div class="breadcrumb">
-        <a href="#">QMentis AI</a> / <a href="#">Projects</a> / <a href="#">E-Commerce Website Redesign</a> / <a href="#">Bug Reports</a> / <span>BUG-001</span>
-      </div>
-      
-      <div class="version-tabs">
-        <div class="version-tab-group">
-          <div class="version-tab">Original</div>
-          <div class="version-tab active">Refined</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QMentisAI - Refined Bug Report</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fb;
+        color: #333;
+      }
+      .app-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .header {
+        background-color: #0091ff;
+        color: white;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .logo-img {
+        height: 32px;
+        margin-right: 10px;
+      }
+      .user-menu {
+        display: flex;
+        align-items: center;
+      }
+      .user-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background-color: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+        color: white;
+      }
+      .main-content {
+        flex: 1;
+        padding: 1.5rem;
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-top: 1.5rem;
+      }
+      .breadcrumb {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 1rem;
+      }
+      .breadcrumb a {
+        color: #0091ff;
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .version-tabs {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 0.5rem;
+        align-items: center;
+      }
+      .version-tab-group {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+      .version-tab {
+        padding: 0.5rem 1rem;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-right: 0.5rem;
+        margin-bottom: 0.25rem;
+      }
+      .version-tab.active {
+        background-color: #0091ff;
+        color: white;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .btn-primary {
+        background-color: #0091ff;
+        color: white;
+      }
+      .btn-primary:hover {
+        background-color: #0073cc;
+      }
+      .btn-secondary {
+        background-color: #38d9a9;
+        color: white;
+      }
+      .btn-secondary:hover {
+        background-color: #20c997;
+      }
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid #ddd;
+        color: #333;
+      }
+      .btn-outline:hover {
+        background-color: #f5f7fb;
+      }
+      .bug-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+      }
+      .section {
+        margin-bottom: 1.5rem;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .section-title {
+        font-weight: 600;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .section-content {
+        padding: 1rem;
+      }
+      .bug-description {
+        margin-bottom: 0.5rem;
+      }
+      .bug-meta {
+        font-size: 14px;
+        color: #666;
+      }
+      .bug-meta-item {
+        margin-right: 1rem;
+      }
+      .steps-list {
+        list-style-type: decimal;
+        padding-left: 1.5rem;
+        margin: 0;
+      }
+      .steps-item {
+        margin-bottom: 0.5rem;
+      }
+      .improvement-header {
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 0.5rem;
+      }
+      .improvement-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333;
+      }
+      .improvement-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-top: 0.5rem;
+      }
+      .improvement-summary {
+        background-color: #ebfbee;
+        border: 1px solid #d3f9d8;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .improvement-summary-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .improvement-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      .improvement-item {
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+      .improvement-item:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #2b8a3e;
+        font-weight: bold;
+      }
+      .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+      .action-buttons-right {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .version-history {
+        margin-bottom: 1.5rem;
+      }
+      .version-history-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .version-history-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .version-history-table th,
+      .version-history-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+      .version-history-table th {
+        font-weight: 600;
+        color: #666;
+        background-color: #f8f9fa;
+      }
+      .view-link {
+        color: #0091ff;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .view-link:hover {
+        text-decoration: underline;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .badge-critical {
+        background-color: rgba(224, 49, 49, 0.1);
+        color: #e03131;
+      }
+      .badge-high {
+        background-color: rgba(247, 103, 7, 0.1);
+        color: #f76707;
+      }
+      .badge-medium {
+        background-color: rgba(255, 169, 77, 0.1);
+        color: #f59f00;
+      }
+      .badge-low {
+        background-color: rgba(56, 217, 169, 0.1);
+        color: #099268;
+      }
+      .comparison-view {
+        margin-bottom: 1.5rem;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .comparison-header {
+        display: flex;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+      }
+      .comparison-tab {
+        flex: 1;
+        padding: 1rem;
+        text-align: center;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .comparison-tab.active {
+        background-color: white;
+        border-bottom: 2px solid #0091ff;
+      }
+      .comparison-content {
+        display: none;
+        padding: 1rem;
+      }
+      .comparison-content.active {
+        display: block;
+      }
+      .diff-view {
+        display: flex;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .diff-column {
+        flex: 1;
+        padding: 1rem;
+      }
+      .diff-column:first-child {
+        border-right: 1px solid #eee;
+      }
+      .diff-header {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .diff-content {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .diff-added {
+        background-color: #ebfbee;
+        padding: 0.25rem;
+        border-radius: 4px;
+      }
+      .diff-removed {
+        background-color: #fff5f5;
+        padding: 0.25rem;
+        border-radius: 4px;
+        text-decoration: line-through;
+      }
+      .version-select {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background-color: white;
+        font-size: 14px;
+        min-width: 150px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 2rem;
+        border-radius: 8px;
+        max-width: 600px;
+        position: relative;
+      }
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .form-label {
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .form-input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .form-textarea {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        min-height: 100px;
+        resize: vertical;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="header">
+        <div class="logo">
+          <img
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-OnKBz1MsmWV8QveiTtc71A2vw3Cdhr.png"
+            alt="QMentisAI Logo"
+            class="logo-img"
+          />
+          QMentisAI
+        </div>
+        <div class="user-menu">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z"
+            ></path>
+            <path d="M16 16 21 21"></path>
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin-left: 16px"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <div class="user-icon">JD</div>
         </div>
       </div>
-      
-      <div class="improvement-summary">
-        <div class="improvement-summary-title">Refinement Summary</div>
-        <ul class="improvement-list">
-          <li class="improvement-item">Added detailed business and technical impact analysis</li>
-          <li class="improvement-item">Identified root causes and recommended specific fixes</li>
-          <li class="improvement-item">Created comprehensive test cases for validation</li>
-          <li class="improvement-item">Improved reproduction steps with clear expected vs. actual results</li>
-          <li class="improvement-item">Added severity assessment and prioritization guidance</li>
-        </ul>
-      </div>
-      
-      <div class="comparison-view">
-        <div class="comparison-header">
-          <div class="comparison-tab active" data-tab="refined">Refined Version</div>
-          <div class="comparison-tab" data-tab="comparison">Side-by-Side Comparison</div>
+
+      <div class="main-content">
+        <div class="breadcrumb">
+          <a href="#">QMentis AI</a> / <a href="#">Projects</a> /
+          <a href="#">E-Commerce Website Redesign</a> /
+          <a href="#">Bug Reports</a> / <span>BUG-001</span>
         </div>
-        
-        <!-- Refined Version Tab -->
-        <div class="comparison-content active" id="refined-tab">
-          <h1 class="bug-title">BUG-001: Checkout process fails with error code 500</h1>
-          
-          <div class="section">
-            <div class="section-title">Description</div>
-            <div class="section-content">
-              <div class="bug-description">
-                <p>Users attempting to complete checkout receive a 500 server error, preventing them from completing purchases. This critical issue affects all payment methods and occurs consistently after the user clicks the "Complete Purchase" button on the payment information page. The error is reproducible across all browsers and devices.</p>
-                <p>The issue appears to be related to a null pointer exception in the payment processing module, specifically in the PaymentProcessor.validateTransaction method when attempting to process the payment information.</p>
+
+        <div class="version-tabs">
+          <div class="version-tab-group">
+            <div class="version-tab">Original</div>
+            <div class="version-tab active">Refined</div>
+          </div>
+        </div>
+
+        <div class="improvement-summary">
+          <div class="improvement-summary-title">Refinement Summary</div>
+          <ul class="improvement-list">
+            <li class="improvement-item">
+              Added detailed business and technical impact analysis
+            </li>
+            <li class="improvement-item">
+              Identified root causes and recommended specific fixes
+            </li>
+            <li class="improvement-item">
+              Created comprehensive test cases for validation
+            </li>
+            <li class="improvement-item">
+              Improved reproduction steps with clear expected vs. actual results
+            </li>
+            <li class="improvement-item">
+              Added severity assessment and prioritization guidance
+            </li>
+          </ul>
+        </div>
+
+        <div class="comparison-view">
+          <div class="comparison-header">
+            <div class="comparison-tab active" data-tab="refined">
+              Refined Version
+            </div>
+            <div class="comparison-tab" data-tab="comparison">
+              Side-by-Side Comparison
+            </div>
+          </div>
+
+          <!-- Refined Version Tab -->
+          <div class="comparison-content active" id="refined-tab">
+            <h1 class="bug-title">
+              BUG-001: Checkout process fails with error code 500
+            </h1>
+
+            <div class="section">
+              <div class="section-title">Description</div>
+              <div class="section-content">
+                <div class="bug-description">
+                  <p>
+                    Users attempting to complete checkout receive a 500 server
+                    error, preventing them from completing purchases. This
+                    critical issue affects all payment methods and occurs
+                    consistently after the user clicks the "Complete Purchase"
+                    button on the payment information page. The error is
+                    reproducible across all browsers and devices.
+                  </p>
+                  <p>
+                    The issue appears to be related to a null pointer exception
+                    in the payment processing module, specifically in the
+                    PaymentProcessor.validateTransaction method when attempting
+                    to process the payment information.
+                  </p>
+                </div>
+                <div class="bug-meta">
+                  <span class="bug-meta-item">Source: Jira</span>
+                  <span class="bug-meta-item">Created: Feb 26, 2025</span>
+                  <span class="bug-meta-item">Refined: Feb 27, 2025</span>
+                </div>
               </div>
-              <div class="bug-meta">
-                <span class="bug-meta-item">Source: Jira</span>
-                <span class="bug-meta-item">Created: Feb 26, 2025</span>
-                <span class="bug-meta-item">Refined: Feb 27, 2025</span>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Steps to Reproduce</div>
+              <div class="section-content">
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Log in to the e-commerce platform (any user account works)
+                  </li>
+                  <li class="steps-item">
+                    Add any product to the shopping cart
+                  </li>
+                  <li class="steps-item">Navigate to the shopping cart page</li>
+                  <li class="steps-item">Click "Proceed to Checkout"</li>
+                  <li class="steps-item">
+                    Fill in shipping information and continue
+                  </li>
+                  <li class="steps-item">
+                    Enter payment information (any valid credit card format
+                    works)
+                  </li>
+                  <li class="steps-item">Click "Complete Purchase" button</li>
+                  <li class="steps-item">Observe the 500 error page</li>
+                </ol>
               </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Steps to Reproduce</div>
-            <div class="section-content">
-              <ol class="steps-list">
-                <li class="steps-item">Log in to the e-commerce platform (any user account works)</li>
-                <li class="steps-item">Add any product to the shopping cart</li>
-                <li class="steps-item">Navigate to the shopping cart page</li>
-                <li class="steps-item">Click "Proceed to Checkout"</li>
-                <li class="steps-item">Fill in shipping information and continue</li>
-                <li class="steps-item">Enter payment information (any valid credit card format works)</li>
-                <li class="steps-item">Click "Complete Purchase" button</li>
-                <li class="steps-item">Observe the 500 error page</li>
-              </ol>
+
+            <div class="section">
+              <div class="section-title">Expected Vs Actual Behaviour</div>
+              <div class="section-content">
+                <p>
+                  <strong>Expected:</strong> The order should be processed
+                  successfully, and the user should be redirected to an order
+                  confirmation page with their order details and a confirmation
+                  number. A confirmation email should be sent to the user's
+                  email address.
+                </p>
+                <p>
+                  <strong>Actual:</strong> The user sees a 500 server error page
+                  with the message "Something went wrong. Please try again
+                  later." The order is not created in the database, and no
+                  confirmation email is sent. The items remain in the user's
+                  cart. The server logs show a null pointer exception in the
+                  payment processing module.
+                </p>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Expected Vs Actual Behaviour</div>
-            <div class="section-content">
-              <p><strong>Expected:</strong> The order should be processed successfully, and the user should be redirected to an order confirmation page with their order details and a confirmation number. A confirmation email should be sent to the user's email address.</p>
-              <p><strong>Actual:</strong> The user sees a 500 server error page with the message "Something went wrong. Please try again later." The order is not created in the database, and no confirmation email is sent. The items remain in the user's cart. The server logs show a null pointer exception in the payment processing module.</p>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Evidence</div>
-            <div class="section-content">
-              <p>Server logs show the following exception:</p>
-              <pre style="background-color: #f8f9fa; padding: 1rem; border-radius: 4px; overflow-x: auto;">
+
+            <div class="section">
+              <div class="section-title">Evidence</div>
+              <div class="section-content">
+                <p>Server logs show the following exception:</p>
+                <pre
+                  style="
+                    background-color: #f8f9fa;
+                    padding: 1rem;
+                    border-radius: 4px;
+                    overflow-x: auto;
+                  "
+                >
 [2025-02-26 14:32:15] [ERROR] [OrderController:processPayment:156] - Failed to process payment: Uncaught exception: java.lang.NullPointerException
 [2025-02-26 14:32:15] [ERROR] [OrderController:processPayment:157] - at com.ecommerce.payment.PaymentProcessor.validateTransaction(PaymentProcessor.java:243)
 [2025-02-26 14:32:15] [ERROR] [OrderController:processPayment:158] - at com.ecommerce.order.OrderService.completeOrder(OrderService.java:187)
 [2025-02-26 14:32:15] [ERROR] [OrderController:processPayment:159] - at com.ecommerce.controllers.OrderController.processPayment(OrderController.java:154)
-              </pre>
-              <p>The error occurs consistently across all browsers and devices. Screenshots of the error page and browser console logs have been attached to the original bug report.</p>
+              </pre
+                >
+                <p>
+                  The error occurs consistently across all browsers and devices.
+                  Screenshots of the error page and browser console logs have
+                  been attached to the original bug report.
+                </p>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Business Impact</div>
-            <div class="section-content">
-              <ul class="improvement-list">
-                <li class="improvement-item">Revenue Loss: Approximately $15,000 per day based on average daily sales</li>
-                <li class="improvement-item">Customer Experience: Significant negative impact with 27 customer complaints received in the last 24 hours</li>
-                <li class="improvement-item">Brand Reputation: Potential long-term damage as customers may switch to competitors</li>
-                <li class="improvement-item">Conversion Rate: Current checkout conversion rate has dropped from 65% to 0% for affected users</li>
-                <li class="improvement-item">Customer Support: Increased load on support team handling customer inquiries about failed orders</li>
-              </ul>
+
+            <div class="section">
+              <div class="section-title">Business Impact</div>
+              <div class="section-content">
+                <ul class="improvement-list">
+                  <li class="improvement-item">
+                    Revenue Loss: Approximately $15,000 per day based on average
+                    daily sales
+                  </li>
+                  <li class="improvement-item">
+                    Customer Experience: Significant negative impact with 27
+                    customer complaints received in the last 24 hours
+                  </li>
+                  <li class="improvement-item">
+                    Brand Reputation: Potential long-term damage as customers
+                    may switch to competitors
+                  </li>
+                  <li class="improvement-item">
+                    Conversion Rate: Current checkout conversion rate has
+                    dropped from 65% to 0% for affected users
+                  </li>
+                  <li class="improvement-item">
+                    Customer Support: Increased load on support team handling
+                    customer inquiries about failed orders
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Technical Impact</div>
-            <div class="section-content">
-              <ul class="improvement-list">
-                <li class="improvement-item">System Stability: Payment processing system remains stable but fails to complete transactions</li>
-                <li class="improvement-item">Database Integrity: No data corruption observed; transactions are simply not being created</li>
-                <li class="improvement-item">API Dependencies: The issue affects all payment methods, suggesting a core payment processing problem rather than a specific payment gateway issue</li>
-                <li class="improvement-item">Performance: No significant performance degradation observed in other parts of the application</li>
-                <li class="improvement-item">Logging: Error is properly logged, providing sufficient information for debugging</li>
-              </ul>
+
+            <div class="section">
+              <div class="section-title">Technical Impact</div>
+              <div class="section-content">
+                <ul class="improvement-list">
+                  <li class="improvement-item">
+                    System Stability: Payment processing system remains stable
+                    but fails to complete transactions
+                  </li>
+                  <li class="improvement-item">
+                    Database Integrity: No data corruption observed;
+                    transactions are simply not being created
+                  </li>
+                  <li class="improvement-item">
+                    API Dependencies: The issue affects all payment methods,
+                    suggesting a core payment processing problem rather than a
+                    specific payment gateway issue
+                  </li>
+                  <li class="improvement-item">
+                    Performance: No significant performance degradation observed
+                    in other parts of the application
+                  </li>
+                  <li class="improvement-item">
+                    Logging: Error is properly logged, providing sufficient
+                    information for debugging
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Severity Level</div>
-            <div class="section-content">
-              <p><span class="badge badge-critical">Critical</span></p>
-              <p>This bug is classified as Critical because:</p>
-              <ul class="improvement-list">
-                <li class="improvement-item">It completely blocks the core business function (completing purchases)</li>
-                <li class="improvement-item">It affects all users attempting to make purchases</li>
-                <li class="improvement-item">It has a direct and significant impact on revenue</li>
-                <li class="improvement-item">It creates a poor customer experience that may result in permanent customer loss</li>
-                <li class="improvement-item">There is no viable workaround for users</li>
-              </ul>
+
+            <div class="section">
+              <div class="section-title">Severity Level</div>
+              <div class="section-content">
+                <p><span class="badge badge-critical">Critical</span></p>
+                <p>This bug is classified as Critical because:</p>
+                <ul class="improvement-list">
+                  <li class="improvement-item">
+                    It completely blocks the core business function (completing
+                    purchases)
+                  </li>
+                  <li class="improvement-item">
+                    It affects all users attempting to make purchases
+                  </li>
+                  <li class="improvement-item">
+                    It has a direct and significant impact on revenue
+                  </li>
+                  <li class="improvement-item">
+                    It creates a poor customer experience that may result in
+                    permanent customer loss
+                  </li>
+                  <li class="improvement-item">
+                    There is no viable workaround for users
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Work Around</div>
-            <div class="section-content">
-              <p>There is currently no workaround for users. Customer support representatives can manually process orders via the admin backend, but this is not scalable and introduces potential for human error.</p>
-              <p>Temporary solution until fix is deployed:</p>
-              <ol class="steps-list">
-                <li class="steps-item">Add a banner on the checkout page informing users of the issue</li>
-                <li class="steps-item">Provide a form for users to submit their order details manually</li>
-                <li class="steps-item">Have customer support team process these orders manually through the admin interface</li>
-              </ol>
+
+            <div class="section">
+              <div class="section-title">Work Around</div>
+              <div class="section-content">
+                <p>
+                  There is currently no workaround for users. Customer support
+                  representatives can manually process orders via the admin
+                  backend, but this is not scalable and introduces potential for
+                  human error.
+                </p>
+                <p>Temporary solution until fix is deployed:</p>
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Add a banner on the checkout page informing users of the
+                    issue
+                  </li>
+                  <li class="steps-item">
+                    Provide a form for users to submit their order details
+                    manually
+                  </li>
+                  <li class="steps-item">
+                    Have customer support team process these orders manually
+                    through the admin interface
+                  </li>
+                </ol>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Possible Causes for Defect Leakage</div>
-            <div class="section-content">
-              <ol class="steps-list">
-                <li class="steps-item">Insufficient test coverage for payment processing edge cases</li>
-                <li class="steps-item">Lack of integration testing with the payment gateway after the recent API update</li>
-                <li class="steps-item">No automated regression tests for the checkout flow</li>
-                <li class="steps-item">Inadequate error handling in the payment processing module</li>
-                <li class="steps-item">Deployment to production without proper staging environment validation</li>
-              </ol>
+
+            <div class="section">
+              <div class="section-title">
+                Possible Causes for Defect Leakage
+              </div>
+              <div class="section-content">
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Insufficient test coverage for payment processing edge cases
+                  </li>
+                  <li class="steps-item">
+                    Lack of integration testing with the payment gateway after
+                    the recent API update
+                  </li>
+                  <li class="steps-item">
+                    No automated regression tests for the checkout flow
+                  </li>
+                  <li class="steps-item">
+                    Inadequate error handling in the payment processing module
+                  </li>
+                  <li class="steps-item">
+                    Deployment to production without proper staging environment
+                    validation
+                  </li>
+                </ol>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Ideal Test Case</div>
-            <div class="section-content">
-              <p><strong>Test Case ID:</strong> TC-CHECKOUT-001</p>
-              <p><strong>Title:</strong> Verify Successful Order Completion with Valid Payment Information</p>
-              <p><strong>Objective:</strong> To ensure that users can successfully complete the checkout process with valid payment information</p>
-              <p><strong>Test Steps:</strong></p>
-              <ol class="steps-list">
-                <li class="steps-item">Log in to the application with valid credentials</li>
-                <li class="steps-item">Add a product to the shopping cart</li>
-                <li class="steps-item">Navigate to the shopping cart page</li>
-                <li class="steps-item">Click "Proceed to Checkout"</li>
-                <li class="steps-item">Enter valid shipping information and continue</li>
-                <li class="steps-item">Enter valid payment information (test credit card: 4111 1111 1111 1111, exp: 12/25, CVV: 123)</li>
-                <li class="steps-item">Click "Complete Purchase" button</li>
-                <li class="steps-item">Verify redirection to order confirmation page</li>
-                <li class="steps-item">Verify order details are displayed correctly</li>
-                <li class="steps-item">Verify confirmation email is received</li>
-              </ol>
-              <p><strong>Expected Result:</strong> User should be able to complete the purchase and see the order confirmation page with correct order details. A confirmation email should be sent to the user's email address.</p>
-              <p><strong>Pass/Fail Criteria:</strong> The test passes if the user is redirected to the order confirmation page and receives a confirmation email. The test fails if any error occurs during the checkout process or if the confirmation page is not displayed.</p>
-              <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-              <p><strong>Execution Environment:</strong> Chrome 120.0.6099.129, Windows 11, Production environment</p>
+
+            <div class="section">
+              <div class="section-title">Ideal Test Case</div>
+              <div class="section-content">
+                <p><strong>Test Case ID:</strong> TC-CHECKOUT-001</p>
+                <p>
+                  <strong>Title:</strong> Verify Successful Order Completion
+                  with Valid Payment Information
+                </p>
+                <p>
+                  <strong>Objective:</strong> To ensure that users can
+                  successfully complete the checkout process with valid payment
+                  information
+                </p>
+                <p><strong>Test Steps:</strong></p>
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Log in to the application with valid credentials
+                  </li>
+                  <li class="steps-item">Add a product to the shopping cart</li>
+                  <li class="steps-item">Navigate to the shopping cart page</li>
+                  <li class="steps-item">Click "Proceed to Checkout"</li>
+                  <li class="steps-item">
+                    Enter valid shipping information and continue
+                  </li>
+                  <li class="steps-item">
+                    Enter valid payment information (test credit card: 4111 1111
+                    1111 1111, exp: 12/25, CVV: 123)
+                  </li>
+                  <li class="steps-item">Click "Complete Purchase" button</li>
+                  <li class="steps-item">
+                    Verify redirection to order confirmation page
+                  </li>
+                  <li class="steps-item">
+                    Verify order details are displayed correctly
+                  </li>
+                  <li class="steps-item">
+                    Verify confirmation email is received
+                  </li>
+                </ol>
+                <p>
+                  <strong>Expected Result:</strong> User should be able to
+                  complete the purchase and see the order confirmation page with
+                  correct order details. A confirmation email should be sent to
+                  the user's email address.
+                </p>
+                <p>
+                  <strong>Pass/Fail Criteria:</strong> The test passes if the
+                  user is redirected to the order confirmation page and receives
+                  a confirmation email. The test fails if any error occurs
+                  during the checkout process or if the confirmation page is not
+                  displayed.
+                </p>
+                <p>
+                  <strong>Priority:</strong>
+                  <span class="badge badge-high">High</span>
+                </p>
+                <p>
+                  <strong>Execution Environment:</strong> Chrome 120.0.6099.129,
+                  Windows 11, Production environment
+                </p>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Possible Causes for Dev Team</div>
-            <div class="section-content">
-              <ol class="steps-list">
-                <li class="steps-item">Null pointer exception in PaymentProcessor.validateTransaction (line 243) suggests the transaction object or one of its properties is null</li>
-                <li class="steps-item">Recent payment gateway API update (v2.4.0 to v2.4.1) changed the response format, but the code wasn't updated to handle the new format</li>
-                <li class="steps-item">Missing null checks in the payment processing code</li>
-                <li class="steps-item">Incorrect assumption about the structure of the payment gateway response</li>
-                <li class="steps-item">Configuration issue with the payment gateway integration in the production environment</li>
-              </ol>
+
+            <div class="section">
+              <div class="section-title">Possible Causes for Dev Team</div>
+              <div class="section-content">
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Null pointer exception in
+                    PaymentProcessor.validateTransaction (line 243) suggests the
+                    transaction object or one of its properties is null
+                  </li>
+                  <li class="steps-item">
+                    Recent payment gateway API update (v2.4.0 to v2.4.1) changed
+                    the response format, but the code wasn't updated to handle
+                    the new format
+                  </li>
+                  <li class="steps-item">
+                    Missing null checks in the payment processing code
+                  </li>
+                  <li class="steps-item">
+                    Incorrect assumption about the structure of the payment
+                    gateway response
+                  </li>
+                  <li class="steps-item">
+                    Configuration issue with the payment gateway integration in
+                    the production environment
+                  </li>
+                </ol>
+              </div>
             </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Recommended Fixes for the Dev Team</div>
-            <div class="section-content">
-              <ol class="steps-list">
-                <li class="steps-item">Add proper null checks in PaymentProcessor.validateTransaction method (line 243)</li>
-                <li class="steps-item">Update the payment processing code to handle the new response format from the payment gateway API</li>
-                <li class="steps-item">Implement a more robust error handling mechanism in the payment processing module</li>
-                <li class="steps-item">Add comprehensive logging throughout the payment process to better identify issues</li>
-                <li class="steps-item">Create a fallback mechanism to handle payment gateway failures gracefully</li>
-                <li class="steps-item">Add unit and integration tests specifically for the payment processing module</li>
-              </ol>
-              <p><strong>Specific Code Fix (Pseudocode):</strong></p>
-              <pre style="background-color: #f8f9fa; padding: 1rem; border-radius: 4px; overflow-x: auto;">
+
+            <div class="section">
+              <div class="section-title">
+                Recommended Fixes for the Dev Team
+              </div>
+              <div class="section-content">
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Add proper null checks in
+                    PaymentProcessor.validateTransaction method (line 243)
+                  </li>
+                  <li class="steps-item">
+                    Update the payment processing code to handle the new
+                    response format from the payment gateway API
+                  </li>
+                  <li class="steps-item">
+                    Implement a more robust error handling mechanism in the
+                    payment processing module
+                  </li>
+                  <li class="steps-item">
+                    Add comprehensive logging throughout the payment process to
+                    better identify issues
+                  </li>
+                  <li class="steps-item">
+                    Create a fallback mechanism to handle payment gateway
+                    failures gracefully
+                  </li>
+                  <li class="steps-item">
+                    Add unit and integration tests specifically for the payment
+                    processing module
+                  </li>
+                </ol>
+                <p><strong>Specific Code Fix (Pseudocode):</strong></p>
+                <pre
+                  style="
+                    background-color: #f8f9fa;
+                    padding: 1rem;
+                    border-radius: 4px;
+                    overflow-x: auto;
+                  "
+                >
 // In PaymentProcessor.java, line 243
 public boolean validateTransaction(Transaction transaction) {
   // Add null check
@@ -665,300 +911,501 @@ public boolean validateTransaction(Transaction transaction) {
   // Continue with existing validation logic
   // ...
 }
-              </pre>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Similar Bugs</div>
-            <div class="section-content">
-              <ul class="improvement-list">
-                <li class="improvement-item">BUG-003: Incorrect price calculation in shopping cart (Related to order processing)</li>
-                <li class="improvement-item">BUG-007: Coupon code "SUMMER25" not applying discount (Related to checkout process)</li>
-                <li class="improvement-item">BUG-012: Payment confirmation email not sent after successful order (Related to order completion)</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Additional Information</div>
-            <div class="section-content">
-              <ul class="improvement-list">
-                <li class="improvement-item">This issue was introduced in the v2.4.1 update deployed on Feb 25, 2025</li>
-                <li class="improvement-item">The payment gateway API was updated in this release</li>
-                <li class="improvement-item">The issue affects all payment methods (credit cards, PayPal, Apple Pay, etc.)</li>
-                <li class="improvement-item">The development team has been notified and is working on a fix</li>
-                <li class="improvement-item">A hotfix is scheduled for deployment within the next 4 hours</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Validation and Verification Retesting</div>
-            <div class="section-content">
-              <p><strong>Retesting Plan:</strong></p>
-              <ol class="steps-list">
-                <li class="steps-item">Verify the fix in the development environment with all supported payment methods</li>
-                <li class="steps-item">Perform regression testing on the entire checkout flow</li>
-                <li class="steps-item">Test with different user accounts, products, and quantities</li>
-                <li class="steps-item">Verify order confirmation emails are sent correctly</li>
-                <li class="steps-item">Monitor server logs for any exceptions during the checkout process</li>
-                <li class="steps-item">Perform load testing to ensure the fix works under high traffic conditions</li>
-              </ol>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">Contextual Use Cases and Scenarios</div>
-            <div class="section-content">
-              <p><strong>Affected User Scenarios:</strong></p>
-              <ol class="steps-list">
-                <li class="steps-item">New customers making their first purchase</li>
-                <li class="steps-item">Returning customers making repeat purchases</li>
-                <li class="steps-item">Customers using saved payment methods</li>
-                <li class="steps-item">Customers using different payment types (credit card, PayPal, etc.)</li>
-                <li class="steps-item">Customers purchasing items on sale or with promotions</li>
-                <li class="steps-item">Mobile users completing purchases on smartphones and tablets</li>
-              </ol>
-              <p><strong>Business Context:</strong></p>
-              <p>This issue is particularly critical as it coincides with the Spring Sale promotion, which typically generates 30% higher traffic and sales volume. Marketing campaigns driving traffic to the site are currently active, making the timing of this bug especially problematic for business outcomes.</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Side-by-Side Comparison Tab -->
-        <div class="comparison-content" id="comparison-tab">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-            <div>
-              <label for="version1">Version 1:</label>
-              <select id="version1" class="version-select">
-                <option value="original" selected>Original</option>
-              </select>
-            </div>
-            <div>
-              <label for="version2">Version 2:</label>
-              <select id="version2" class="version-select">
-                <option value="refined" selected>Refined</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="diff-view">
-            <div class="diff-column">
-              <div class="diff-header">
-                <span>Original Version</span>
-                <span><span class="badge badge-critical">Critical</span></span>
+              </pre
+                >
               </div>
-              <div class="diff-content">
-                <p><strong>Title:</strong> Checkout process fails with error code 500</p>
-                
-                <p><strong>Description:</strong> Users attempting to complete checkout receive a 500 server error, preventing them from completing purchases. This is happening on both mobile and desktop browsers. The error occurs after the user clicks the "Complete Purchase" button on the payment information page.</p>
-                
-                <p><strong>Steps to Reproduce:</strong></p>
-                <ol>
-                  <li>Add any product to cart</li>
-                  <li>Proceed to checkout</li>
-                  <li>Fill in shipping information and continue</li>
-                  <li>Enter payment information (any valid credit card format works for reproduction)</li>
-                  <li>Click "Complete Purchase" button</li>
-                  <li>Observe 500 error page</li>
-                </ol>
-                
-                <p><strong>Expected Result:</strong> The order should be processed successfully, and the user should be redirected to an order confirmation page with their order details and a confirmation number.</p>
-                
-                <p><strong>Actual Result:</strong> The user sees a 500 server error page. The order is not created in the database, and no confirmation email is sent. The items remain in the user's cart.</p>
-                
-                <p><strong>Environment:</strong></p>
-                <ul>
-                  <li>Browser: Chrome 120.0.6099.129, Firefox 121.0, Safari 17.2</li>
-                  <li>Operating System: Windows 11, macOS 14.2.1, iOS 17.2</li>
-                  <li>Server Environment: Production</li>
-                  <li>Application Version: 2.4.1</li>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Similar Bugs</div>
+              <div class="section-content">
+                <ul class="improvement-list">
+                  <li class="improvement-item">
+                    BUG-003: Incorrect price calculation in shopping cart
+                    (Related to order processing)
+                  </li>
+                  <li class="improvement-item">
+                    BUG-007: Coupon code "SUMMER25" not applying discount
+                    (Related to checkout process)
+                  </li>
+                  <li class="improvement-item">
+                    BUG-012: Payment confirmation email not sent after
+                    successful order (Related to order completion)
+                  </li>
                 </ul>
               </div>
             </div>
-            <div class="diff-column">
-              <div class="diff-header">
-                <span>Refined Version</span>
-                <span><span class="badge badge-critical">Critical</span></span>
+
+            <div class="section">
+              <div class="section-title">Additional Information</div>
+              <div class="section-content">
+                <ul class="improvement-list">
+                  <li class="improvement-item">
+                    This issue was introduced in the v2.4.1 update deployed on
+                    Feb 25, 2025
+                  </li>
+                  <li class="improvement-item">
+                    The payment gateway API was updated in this release
+                  </li>
+                  <li class="improvement-item">
+                    The issue affects all payment methods (credit cards, PayPal,
+                    Apple Pay, etc.)
+                  </li>
+                  <li class="improvement-item">
+                    The development team has been notified and is working on a
+                    fix
+                  </li>
+                  <li class="improvement-item">
+                    A hotfix is scheduled for deployment within the next 4 hours
+                  </li>
+                </ul>
               </div>
-              <div class="diff-content">
-                <p><strong>Title:</strong> Checkout process fails with error code 500</p>
-                
-                <p><strong>Description:</strong> Users attempting to complete checkout receive a 500 server error, preventing them from completing purchases. <span class="diff-added">This critical issue affects all payment methods and occurs consistently</span> after the user clicks the "Complete Purchase" button on the payment information page. <span class="diff-added">The error is reproducible across all browsers and devices.</span></p>
-                
-                <p><span class="diff-added">The issue appears to be related to a null pointer exception in the payment processing module, specifically in the PaymentProcessor.validateTransaction method when attempting to process the payment information.</span></p>
-                
-                <p><strong>Steps to Reproduce:</strong></p>
-                <ol>
-                  <li><span class="diff-added">Log in to the e-commerce platform (any user account works)</span></li>
-                  <li>Add any product to cart</li>
-                  <li><span class="diff-added">Navigate to the shopping cart page</span></li>
-                  <li><span class="diff-added">Click "Proceed to Checkout"</span></li>
-                  <li>Fill in shipping information and continue</li>
-                  <li>Enter payment information (any valid credit card format works for reproduction)</li>
-                  <li>Click "Complete Purchase" button</li>
-                  <li>Observe 500 error page</li>
+            </div>
+
+            <div class="section">
+              <div class="section-title">
+                Validation and Verification Retesting
+              </div>
+              <div class="section-content">
+                <p><strong>Retesting Plan:</strong></p>
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    Verify the fix in the development environment with all
+                    supported payment methods
+                  </li>
+                  <li class="steps-item">
+                    Perform regression testing on the entire checkout flow
+                  </li>
+                  <li class="steps-item">
+                    Test with different user accounts, products, and quantities
+                  </li>
+                  <li class="steps-item">
+                    Verify order confirmation emails are sent correctly
+                  </li>
+                  <li class="steps-item">
+                    Monitor server logs for any exceptions during the checkout
+                    process
+                  </li>
+                  <li class="steps-item">
+                    Perform load testing to ensure the fix works under high
+                    traffic conditions
+                  </li>
                 </ol>
-                
-                <p><strong>Expected Result:</strong> The order should be processed successfully, and the user should be redirected to an order confirmation page with their order details and a confirmation number. <span class="diff-added">A confirmation email should be sent to the user's email address.</span></p>
-                
-                <p><strong>Actual Result:</strong> The user sees a 500 server error page <span class="diff-added">with the message "Something went wrong. Please try again later."</span> The order is not created in the database, and no confirmation email is sent. The items remain in the user's cart. <span class="diff-added">The server logs show a null pointer exception in the payment processing module.</span></p>
-                
-                <p><span class="diff-added"><strong>Business Impact:</strong> Revenue loss of approximately $15,000 per day, significant negative customer experience with 27 complaints in 24 hours, potential long-term brand damage, checkout conversion rate dropped from 65% to 0% for affected users.</span></p>
-                
-                <p><span class="diff-added"><strong>Technical Impact:</strong> Core payment processing system failure affecting all payment methods. No data corruption observed, but transactions cannot be completed.</span></p>
-                
-                <p><span class="diff-added"><strong>Recommended Fix:</strong> Add proper null checks in PaymentProcessor.validateTransaction method, update code to handle new payment gateway API response format, implement robust error handling.</span></p>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">
+                Contextual Use Cases and Scenarios
+              </div>
+              <div class="section-content">
+                <p><strong>Affected User Scenarios:</strong></p>
+                <ol class="steps-list">
+                  <li class="steps-item">
+                    New customers making their first purchase
+                  </li>
+                  <li class="steps-item">
+                    Returning customers making repeat purchases
+                  </li>
+                  <li class="steps-item">
+                    Customers using saved payment methods
+                  </li>
+                  <li class="steps-item">
+                    Customers using different payment types (credit card,
+                    PayPal, etc.)
+                  </li>
+                  <li class="steps-item">
+                    Customers purchasing items on sale or with promotions
+                  </li>
+                  <li class="steps-item">
+                    Mobile users completing purchases on smartphones and tablets
+                  </li>
+                </ol>
+                <p><strong>Business Context:</strong></p>
+                <p>
+                  This issue is particularly critical as it coincides with the
+                  Spring Sale promotion, which typically generates 30% higher
+                  traffic and sales volume. Marketing campaigns driving traffic
+                  to the site are currently active, making the timing of this
+                  bug especially problematic for business outcomes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Side-by-Side Comparison Tab -->
+          <div class="comparison-content" id="comparison-tab">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+              "
+            >
+              <div>
+                <label for="version1">Version 1:</label>
+                <select id="version1" class="version-select">
+                  <option value="original" selected>Original</option>
+                </select>
+              </div>
+              <div>
+                <label for="version2">Version 2:</label>
+                <select id="version2" class="version-select">
+                  <option value="refined" selected>Refined</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="diff-view">
+              <div class="diff-column">
+                <div class="diff-header">
+                  <span>Original Version</span>
+                  <span
+                    ><span class="badge badge-critical">Critical</span></span
+                  >
+                </div>
+                <div class="diff-content">
+                  <p>
+                    <strong>Title:</strong> Checkout process fails with error
+                    code 500
+                  </p>
+
+                  <p>
+                    <strong>Description:</strong> Users attempting to complete
+                    checkout receive a 500 server error, preventing them from
+                    completing purchases. This is happening on both mobile and
+                    desktop browsers. The error occurs after the user clicks the
+                    "Complete Purchase" button on the payment information page.
+                  </p>
+
+                  <p><strong>Steps to Reproduce:</strong></p>
+                  <ol>
+                    <li>Add any product to cart</li>
+                    <li>Proceed to checkout</li>
+                    <li>Fill in shipping information and continue</li>
+                    <li>
+                      Enter payment information (any valid credit card format
+                      works for reproduction)
+                    </li>
+                    <li>Click "Complete Purchase" button</li>
+                    <li>Observe 500 error page</li>
+                  </ol>
+
+                  <p>
+                    <strong>Expected Result:</strong> The order should be
+                    processed successfully, and the user should be redirected to
+                    an order confirmation page with their order details and a
+                    confirmation number.
+                  </p>
+
+                  <p>
+                    <strong>Actual Result:</strong> The user sees a 500 server
+                    error page. The order is not created in the database, and no
+                    confirmation email is sent. The items remain in the user's
+                    cart.
+                  </p>
+
+                  <p><strong>Environment:</strong></p>
+                  <ul>
+                    <li>
+                      Browser: Chrome 120.0.6099.129, Firefox 121.0, Safari 17.2
+                    </li>
+                    <li>
+                      Operating System: Windows 11, macOS 14.2.1, iOS 17.2
+                    </li>
+                    <li>Server Environment: Production</li>
+                    <li>Application Version: 2.4.1</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="diff-column">
+                <div class="diff-header">
+                  <span>Refined Version</span>
+                  <span
+                    ><span class="badge badge-critical">Critical</span></span
+                  >
+                </div>
+                <div class="diff-content">
+                  <p>
+                    <strong>Title:</strong> Checkout process fails with error
+                    code 500
+                  </p>
+
+                  <p>
+                    <strong>Description:</strong> Users attempting to complete
+                    checkout receive a 500 server error, preventing them from
+                    completing purchases.
+                    <span class="diff-added"
+                      >This critical issue affects all payment methods and
+                      occurs consistently</span
+                    >
+                    after the user clicks the "Complete Purchase" button on the
+                    payment information page.
+                    <span class="diff-added"
+                      >The error is reproducible across all browsers and
+                      devices.</span
+                    >
+                  </p>
+
+                  <p>
+                    <span class="diff-added"
+                      >The issue appears to be related to a null pointer
+                      exception in the payment processing module, specifically
+                      in the PaymentProcessor.validateTransaction method when
+                      attempting to process the payment information.</span
+                    >
+                  </p>
+
+                  <p><strong>Steps to Reproduce:</strong></p>
+                  <ol>
+                    <li>
+                      <span class="diff-added"
+                        >Log in to the e-commerce platform (any user account
+                        works)</span
+                      >
+                    </li>
+                    <li>Add any product to cart</li>
+                    <li>
+                      <span class="diff-added"
+                        >Navigate to the shopping cart page</span
+                      >
+                    </li>
+                    <li>
+                      <span class="diff-added"
+                        >Click "Proceed to Checkout"</span
+                      >
+                    </li>
+                    <li>Fill in shipping information and continue</li>
+                    <li>
+                      Enter payment information (any valid credit card format
+                      works for reproduction)
+                    </li>
+                    <li>Click "Complete Purchase" button</li>
+                    <li>Observe 500 error page</li>
+                  </ol>
+
+                  <p>
+                    <strong>Expected Result:</strong> The order should be
+                    processed successfully, and the user should be redirected to
+                    an order confirmation page with their order details and a
+                    confirmation number.
+                    <span class="diff-added"
+                      >A confirmation email should be sent to the user's email
+                      address.</span
+                    >
+                  </p>
+
+                  <p>
+                    <strong>Actual Result:</strong> The user sees a 500 server
+                    error page
+                    <span class="diff-added"
+                      >with the message "Something went wrong. Please try again
+                      later."</span
+                    >
+                    The order is not created in the database, and no
+                    confirmation email is sent. The items remain in the user's
+                    cart.
+                    <span class="diff-added"
+                      >The server logs show a null pointer exception in the
+                      payment processing module.</span
+                    >
+                  </p>
+
+                  <p>
+                    <span class="diff-added"
+                      ><strong>Business Impact:</strong> Revenue loss of
+                      approximately $15,000 per day, significant negative
+                      customer experience with 27 complaints in 24 hours,
+                      potential long-term brand damage, checkout conversion rate
+                      dropped from 65% to 0% for affected users.</span
+                    >
+                  </p>
+
+                  <p>
+                    <span class="diff-added"
+                      ><strong>Technical Impact:</strong> Core payment
+                      processing system failure affecting all payment methods.
+                      No data corruption observed, but transactions cannot be
+                      completed.</span
+                    >
+                  </p>
+
+                  <p>
+                    <span class="diff-added"
+                      ><strong>Recommended Fix:</strong> Add proper null checks
+                      in PaymentProcessor.validateTransaction method, update
+                      code to handle new payment gateway API response format,
+                      implement robust error handling.</span
+                    >
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div class="action-buttons">
-        <div>
-          <button class="btn btn-outline">Back to Original</button>
-        </div>
-        <div class="action-buttons-right">
-          <button class="btn btn-outline">Edit</button>
-          <button class="btn btn-secondary" id="refine-again-btn">Refine Again with AI</button>
-          <button class="btn btn-primary">Save as New Version</button>
-        </div>
-      </div>
-      
-      <div class="version-history">
-        <div class="version-history-title">Version History</div>
-        <table class="version-history-table">
-          <thead>
-            <tr>
-              <th>Version</th>
-              <th>Description</th>
-              <th>Date</th>
-              <th>Author</th>
-              <th>Severity</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Original</td>
-              <td>Initial bug report</td>
-              <td>Feb 26, 2025</td>
-              <td>Sarah Johnson</td>
-              <td><span class="badge badge-critical">Critical</span></td>
-              <td><a href="#" class="view-link">View</a></td>
-            </tr>
-            <tr>
-              <td>Refined</td>
-              <td>Enhanced with AI analysis</td>
-              <td>Feb 27, 2025</td>
-              <td>QMentisAI</td>
-              <td><span class="badge badge-critical">Critical</span></td>
-              <td><a href="#" class="view-link">View</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Refine Again Modal -->
-  <div id="refine-modal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <div class="modal-title">Refine Bug Report with AI</div>
-      <div class="modal-form">
-        <div class="form-group">
-          <label class="form-label">What aspects of the bug report would you like to enhance?</label>
-          <textarea class="form-textarea" placeholder="E.g., Add more technical details, improve reproduction steps, suggest better fixes..."></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Any additional information or context to consider?</label>
-          <textarea class="form-textarea" placeholder="E.g., New information about the bug, specific requirements for the fix..."></textarea>
-        </div>
-        <div class="modal-actions">
-          <button class="btn btn-outline">Cancel</button>
-          <button class="btn btn-primary">Refine with AI</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Comparison tab switching
-      const comparisonTabs = document.querySelectorAll('.comparison-tab');
-      const comparisonContents = document.querySelectorAll('.comparison-content');
-      
-      comparisonTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          // Remove active class from all tabs and contents
-          comparisonTabs.forEach(t => t.classList.remove('active'));
-          comparisonContents.forEach(c => c.classList.remove('active'));
-          
-          // Add active class to clicked tab
-          this.classList.add('active');
-          
-          // Get the tab id and show corresponding content
-          const tabId = this.getAttribute('data-tab');
-          document.getElementById(tabId + '-tab').classList.add('active');
+        <div class="action-buttons">
+          <div>
+            <button class="btn btn-outline">Back to Original</button>
+          </div>
+          <div class="action-buttons-right">
+            <button class="btn btn-outline">Edit</button>
+            <button class="btn btn-secondary" id="refine-again-btn">
+              ENHANCE
+            </button>
+            <button class="btn btn-primary">Save as New Version</button>
+          </div>
+        </div>
+
+        <div class="version-history">
+          <div class="version-history-title">Version History</div>
+          <table class="version-history-table">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Author</th>
+                <th>Severity</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Original</td>
+                <td>Initial bug report</td>
+                <td>Feb 26, 2025</td>
+                <td>Sarah Johnson</td>
+                <td><span class="badge badge-critical">Critical</span></td>
+                <td><a href="#" class="view-link">View</a></td>
+              </tr>
+              <tr>
+                <td>Refined</td>
+                <td>Enhanced with AI analysis</td>
+                <td>Feb 27, 2025</td>
+                <td>QMentisAI</td>
+                <td><span class="badge badge-critical">Critical</span></td>
+                <td><a href="#" class="view-link">View</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refine Again Modal -->
+    <div id="refine-modal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <div class="modal-title">Refine Bug Report with AI</div>
+        <div class="modal-form">
+          <div class="form-group">
+            <label class="form-label"
+              >What aspects of the bug report would you like to enhance?</label
+            >
+            <textarea
+              class="form-textarea"
+              placeholder="E.g., Add more technical details, improve reproduction steps, suggest better fixes..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label"
+              >Any additional information or context to consider?</label
+            >
+            <textarea
+              class="form-textarea"
+              placeholder="E.g., New information about the bug, specific requirements for the fix..."
+            ></textarea>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-outline">Cancel</button>
+            <button class="btn btn-primary">ENHANCE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Comparison tab switching
+        const comparisonTabs = document.querySelectorAll(".comparison-tab");
+        const comparisonContents = document.querySelectorAll(
+          ".comparison-content"
+        );
+
+        comparisonTabs.forEach((tab) => {
+          tab.addEventListener("click", function () {
+            // Remove active class from all tabs and contents
+            comparisonTabs.forEach((t) => t.classList.remove("active"));
+            comparisonContents.forEach((c) => c.classList.remove("active"));
+
+            // Add active class to clicked tab
+            this.classList.add("active");
+
+            // Get the tab id and show corresponding content
+            const tabId = this.getAttribute("data-tab");
+            document.getElementById(tabId + "-tab").classList.add("active");
+          });
+        });
+
+        // Version comparison selectors
+        const version1Select = document.getElementById("version1");
+        const version2Select = document.getElementById("version2");
+
+        version1Select.addEventListener("change", updateComparisonView);
+        version2Select.addEventListener("change", updateComparisonView);
+
+        function updateComparisonView() {
+          const version1 = version1Select.value;
+          const version2 = version2Select.value;
+
+          // Update the diff-header text
+          const diffHeaders = document.querySelectorAll(
+            ".diff-header span:first-child"
+          );
+          diffHeaders[0].textContent = getVersionName(version1);
+          diffHeaders[1].textContent = getVersionName(version2);
+
+          // In a real application, this would fetch the actual content for the selected versions
+          console.log(`Comparing ${version1} with ${version2}`);
+        }
+
+        function getVersionName(version) {
+          switch (version) {
+            case "original":
+              return "Original Version";
+            case "refined":
+              return "Refined Version";
+            default:
+              return version;
+          }
+        }
+
+        // Modal functionality
+        const refineAgainBtn = document.getElementById("refine-again-btn");
+        const refineModal = document.getElementById("refine-modal");
+        const modalClose = document.querySelector(".modal-close");
+        const cancelBtn = document.querySelector(".modal-actions .btn-outline");
+
+        refineAgainBtn.addEventListener("click", function () {
+          refineModal.style.display = "block";
+        });
+
+        modalClose.addEventListener("click", function () {
+          refineModal.style.display = "none";
+        });
+
+        cancelBtn.addEventListener("click", function () {
+          refineModal.style.display = "none";
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener("click", function (event) {
+          if (event.target === refineModal) {
+            refineModal.style.display = "none";
+          }
         });
       });
-      
-      // Version comparison selectors
-      const version1Select = document.getElementById('version1');
-      const version2Select = document.getElementById('version2');
-      
-      version1Select.addEventListener('change', updateComparisonView);
-      version2Select.addEventListener('change', updateComparisonView);
-      
-      function updateComparisonView() {
-        const version1 = version1Select.value;
-        const version2 = version2Select.value;
-        
-        // Update the diff-header text
-        const diffHeaders = document.querySelectorAll('.diff-header span:first-child');
-        diffHeaders[0].textContent = getVersionName(version1);
-        diffHeaders[1].textContent = getVersionName(version2);
-        
-        // In a real application, this would fetch the actual content for the selected versions
-        console.log(`Comparing ${version1} with ${version2}`);
-      }
-      
-      function getVersionName(version) {
-        switch(version) {
-          case 'original': return 'Original Version';
-          case 'refined': return 'Refined Version';
-          default: return version;
-        }
-      }
-      
-      // Modal functionality
-      const refineAgainBtn = document.getElementById('refine-again-btn');
-      const refineModal = document.getElementById('refine-modal');
-      const modalClose = document.querySelector('.modal-close');
-      const cancelBtn = document.querySelector('.modal-actions .btn-outline');
-      
-      refineAgainBtn.addEventListener('click', function() {
-        refineModal.style.display = 'block';
-      });
-      
-      modalClose.addEventListener('click', function() {
-        refineModal.style.display = 'none';
-      });
-      
-      cancelBtn.addEventListener('click', function() {
-        refineModal.style.display = 'none';
-      });
-      
-      // Close modal when clicking outside
-      window.addEventListener('click', function(event) {
-        if (event.target === refineModal) {
-          refineModal.style.display = 'none';
-        }
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
