@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Pricing Calculator</title>
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #dee2e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f8ff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+        
+        .calculator-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .model-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .model-card {
+            flex: 1 0 200px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .model-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .model-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.05);
+        }
+        
+        .model-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .model-price {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+        
+        .pricing-type {
+            margin: 20px 0;
+        }
+        
+        .pricing-type label {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .token-counts {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .token-counts .input-group {
+            flex: 1;
+        }
+        
+        .calculate-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: background-color 0.3s ease;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #3a5bd9;
+        }
+        
+        .results {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .result-item.total {
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .info-text {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+        
+        .token-display {
+            background-color: var(--light-color);
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+        
+        .disclaimer {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+        
+        .disclaimer-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .token-counts {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .model-card {
+                flex: 1 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Model Pricing Calculator</h1>
+        
+        <div class="calculator-section">
+            <div class="section-title">Select AI Model</div>
+            <div class="model-selection">
+                <div class="model-card" data-model="llama-90b" data-input="1.2" data-output="1.2" data-fixed="true">
+                    <div class="model-name">Llama 3.3 90B</div>
+                    <div class="model-price">$1.20 per 1M tokens (input & output)</div>
+                </div>
+                <div class="model-card" data-model="llama-70b" data-input="0.88" data-output="0.88" data-fixed="true">
+                    <div class="model-name">Llama 3.3 70B</div>
+                    <div class="model-price">$0.88 per 1M tokens (input & output)</div>
+                </div>
+                <div class="model-card" data-model="deepseek-67b" data-input="0.9" data-output="0.9" data-fixed="true">
+                    <div class="model-name">DeepSeek LLM Chat 67B</div>
+                    <div class="model-price">$0.90 per 1M tokens</div>
+                </div>
+                <div class="model-card" data-model="claude-haiku" data-input="0.25" data-output="1.25" data-fixed="false">
+                    <div class="model-name">Claude 3 Haiku</div>
+                    <div class="model-price">$0.25 / $1.25 per 1M tokens (input/output)</div>
+                </div>
+                <div class="model-card" data-model="claude-sonnet" data-input="3.00" data-output="15.00" data-fixed="false">
+                    <div class="model-name">Claude 3.7 Sonnet</div>
+                    <div class="model-price">$3.00 / $15.00 per 1M tokens (input/output)</div>
+                </div>
+                <div class="model-card" data-model="gpt-4o" data-input="2.50" data-output="10.00" data-fixed="false">
+                    <div class="model-name">GPT-4o</div>
+                    <div class="model-price">$2.50 / $10.00 per 1M tokens (input/output)</div>
+                </div>
+                <div class="model-card" data-model="gpt-4o-mini" data-input="0.15" data-output="0.60" data-fixed="false">
+                    <div class="model-name">GPT-4o mini</div>
+                    <div class="model-price">$0.15 / $0.60 per 1M tokens (input/output)</div>
+                </div>
+                <div class="model-card" data-model="gpt-4.5" data-input="75.00" data-output="150.00" data-fixed="false">
+                    <div class="model-name">GPT-4.5</div>
+                    <div class="model-price">$75.00 / $150.00 per 1M tokens (input/output)</div>
+                </div>
+                <div class="model-card" data-model="custom" data-input="" data-output="" data-fixed="false">
+                    <div class="model-name">Custom Model</div>
+                    <div class="model-price">Define your own pricing</div>
+                </div>
+            </div>
+            
+            <div id="custom-pricing" class="hidden">
+                <div class="pricing-type">
+                    <label>
+                        <input type="radio" name="pricing-type" value="fixed" checked> Fixed price (same for input & output)
+                    </label>
+                    <label>
+                        <input type="radio" name="pricing-type" value="variable"> Variable price (different for input & output)
+                    </label>
+                </div>
+                
+                <div id="pricing-inputs">
+                    <div class="input-group" id="fixed-price-input">
+                        <label for="fixed-price">Price per 1M tokens ($)</label>
+                        <input type="number" id="fixed-price" step="0.01" min="0" placeholder="Enter price per 1M tokens">
+                    </div>
+                    
+                    <div class="variable-price-inputs hidden">
+                        <div class="token-counts">
+                            <div class="input-group">
+                                <label for="input-price">Input Price per 1M tokens ($)</label>
+                                <input type="number" id="input-price" step="0.01" min="0" placeholder="Enter input price">
+                            </div>
+                            <div class="input-group">
+                                <label for="output-price">Output Price per 1M tokens ($)</label>
+                                <input type="number" id="output-price" step="0.01" min="0" placeholder="Enter output price">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calculator-section">
+            <div class="section-title">Text Input & Output</div>
+            
+            <div class="input-group">
+                <label for="prompt-text">Prompt Text</label>
+                <textarea id="prompt-text" placeholder="Enter your prompt text here"></textarea>
+                <div class="token-display" id="prompt-token-display">Estimated tokens: 0</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="input-text">Input Text</label>
+                <textarea id="input-text" placeholder="Enter your input text here (system message, context, etc.)"></textarea>
+                <div class="token-display" id="input-token-display">Estimated tokens: 0</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="output-text">Output Text</label>
+                <textarea id="output-text" placeholder="Enter expected output text here (response)"></textarea>
+                <div class="token-display" id="output-token-display">Estimated tokens: 0</div>
+            </div>
+            
+            <div class="disclaimer">
+                <div class="disclaimer-title">Disclaimer:</div>
+                <p>This calculator provides an approximate estimation of token counts and costs. AI companies have their own methods for calculating tokens, which may differ from our estimation (1 token ≈ 4 characters). Actual costs may vary based on the specific AI model's tokenization algorithm.</p>
+            </div>
+            
+            <button id="calculate-btn" class="calculate-btn">Calculate Price</button>
+            
+            <div class="results hidden" id="results-section">
+                <div class="section-title">Calculation Results</div>
+                <div class="result-item">
+                    <span>Selected Model:</span>
+                    <span id="result-model">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Prompt Tokens:</span>
+                    <span id="result-prompt-tokens">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Input Tokens:</span>
+                    <span id="result-input-tokens">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Output Tokens:</span>
+                    <span id="result-output-tokens">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Tokens:</span>
+                    <span id="result-total-tokens">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Input Cost (USD):</span>
+                    <span id="result-input-cost-usd">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Output Cost (USD):</span>
+                    <span id="result-output-cost-usd">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Input Cost (INR):</span>
+                    <span id="result-input-cost-inr">-</span>
+                </div>
+                <div class="result-item">
+                    <span>Output Cost (INR):</span>
+                    <span id="result-output-cost-inr">-</span>
+                </div>
+                <div class="result-item total">
+                    <span>Total Cost (USD):</span>
+                    <span id="result-total-cost-usd">-</span>
+                </div>
+                <div class="result-item total">
+                    <span>Total Cost (INR):</span>
+                    <span id="result-total-cost-inr">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Constants
+            const USD_TO_INR = 86; // Conversion rate: 1 USD = 86 INR
+            
+            // Elements
+            const modelCards = document.querySelectorAll('.model-card');
+            const customPricingSection = document.getElementById('custom-pricing');
+            const pricingTypeRadios = document.querySelectorAll('input[name="pricing-type"]');
+            const fixedPriceInput = document.getElementById('fixed-price-input');
+            const variablePriceInputs = document.querySelector('.variable-price-inputs');
+            const fixedPriceField = document.getElementById('fixed-price');
+            const inputPriceField = document.getElementById('input-price');
+            const outputPriceField = document.getElementById('output-price');
+            const promptTextField = document.getElementById('prompt-text');
+            const inputTextField = document.getElementById('input-text');
+            const outputTextField = document.getElementById('output-text');
+            const promptTokenDisplay = document.getElementById('prompt-token-display');
+            const inputTokenDisplay = document.getElementById('input-token-display');
+            const outputTokenDisplay = document.getElementById('output-token-display');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultsSection = document.getElementById('results-section');
+            
+            // Result elements
+            const resultModel = document.getElementById('result-model');
+            const resultPromptTokens = document.getElementById('result-prompt-tokens');
+            const resultInputTokens = document.getElementById('result-input-tokens');
+            const resultOutputTokens = document.getElementById('result-output-tokens');
+            const resultTotalTokens = document.getElementById('result-total-tokens');
+            const resultInputCostUSD = document.getElementById('result-input-cost-usd');
+            const resultOutputCostUSD = document.getElementById('result-output-cost-usd');
+            const resultInputCostINR = document.getElementById('result-input-cost-inr');
+            const resultOutputCostINR = document.getElementById('result-output-cost-inr');
+            const resultTotalCostUSD = document.getElementById('result-total-cost-usd');
+            const resultTotalCostINR = document.getElementById('result-total-cost-inr');
+            
+            // State
+            let selectedModel = null;
+            let isPricingFixed = true;
+            
+            // Model selection
+            modelCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    modelCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Update selected model
+                    selectedModel = {
+                        name: this.querySelector('.model-name').textContent,
+                        model: this.dataset.model,
+                        inputPrice: parseFloat(this.dataset.input),
+                        outputPrice: parseFloat(this.dataset.output),
+                        isFixed: this.dataset.fixed === 'true'
+                    };
+                    
+                    // Show/hide custom pricing section
+                    if (selectedModel.model === 'custom') {
+                        customPricingSection.classList.remove('hidden');
+                        
+                        // Update pricing type based on model
+                        if (selectedModel.isFixed) {
+                            document.querySelector('input[name="pricing-type"][value="fixed"]').checked = true;
+                            isPricingFixed = true;
+                        } else {
+                            document.querySelector('input[name="pricing-type"][value="variable"]').checked = true;
+                            isPricingFixed = false;
+                        }
+                        
+                        // Update pricing inputs
+                        updatePricingInputs();
+                        
+                        // Clear fields for custom model
+                        fixedPriceField.value = '';
+                        inputPriceField.value = '';
+                        outputPriceField.value = '';
+                    } else {
+                        customPricingSection.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Pricing type change
+            pricingTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    isPricingFixed = this.value === 'fixed';
+                    updatePricingInputs();
+                });
+            });
+            
+            // Update pricing inputs visibility based on pricing type
+            function updatePricingInputs() {
+                if (isPricingFixed) {
+                    fixedPriceInput.classList.remove('hidden');
+                    variablePriceInputs.classList.add('hidden');
+                } else {
+                    fixedPriceInput.classList.add('hidden');
+                    variablePriceInputs.classList.remove('hidden');
+                }
+            }
+            
+            // Token estimation from prompt text
+            promptTextField.addEventListener('input', function() {
+                const text = this.value;
+                const tokenEstimate = estimateTokens(text);
+                promptTokenDisplay.textContent = `Estimated tokens: ${tokenEstimate.toLocaleString()}`;
+            });
+            
+            // Token estimation from input text
+            inputTextField.addEventListener('input', function() {
+                const text = this.value;
+                const tokenEstimate = estimateTokens(text);
+                inputTokenDisplay.textContent = `Estimated tokens: ${tokenEstimate.toLocaleString()}`;
+            });
+            
+            // Token estimation from output text
+            outputTextField.addEventListener('input', function() {
+                const text = this.value;
+                const tokenEstimate = estimateTokens(text);
+                outputTokenDisplay.textContent = `Estimated tokens: ${tokenEstimate.toLocaleString()}`;
+            });
+            
+            // Calculate button click
+            calculateBtn.addEventListener('click', function() {
+                if (!selectedModel) {
+                    alert('Please select an AI model first');
+                    return;
+                }
+                
+                // Get text from all fields
+                const promptText = promptTextField.value;
+                const inputText = inputTextField.value;
+                const outputText = outputTextField.value;
+                
+                if (!promptText && !inputText && !outputText) {
+                    alert('Please enter text in at least one of the text fields');
+                    return;
+                }
+                
+                // Estimate tokens
+                const promptTokens = estimateTokens(promptText);
+                const inputTokens = estimateTokens(inputText);
+                const outputTokens = estimateTokens(outputText);
+                const totalInputTokens = promptTokens + inputTokens;
+                const totalTokens = totalInputTokens + outputTokens;
+                
+                // Get pricing values
+                let inputPrice, outputPrice;
+                
+                if (selectedModel.model === 'custom') {
+                    if (isPricingFixed) {
+                        inputPrice = parseFloat(fixedPriceField.value) || 0;
+                        outputPrice = inputPrice;
+                    } else {
+                        inputPrice = parseFloat(inputPriceField.value) || 0;
+                        outputPrice = parseFloat(outputPriceField.value) || 0;
+                    }
+                    
+                    if (inputPrice === 0 && outputPrice === 0) {
+                        alert('Please enter pricing information for your custom model');
+                        return;
+                    }
+                } else {
+                    // Use predefined model pricing
+                    inputPrice = selectedModel.inputPrice;
+                    outputPrice = selectedModel.outputPrice;
+                }
+                
+                // Calculate costs in USD
+                const inputCostUSD = (totalInputTokens / 1000000) * inputPrice;
+                const outputCostUSD = (outputTokens / 1000000) * outputPrice;
+                const totalCostUSD = inputCostUSD + outputCostUSD;
+                
+                // Calculate costs in INR
+                const inputCostINR = inputCostUSD * USD_TO_INR;
+                const outputCostINR = outputCostUSD * USD_TO_INR;
+                const totalCostINR = totalCostUSD * USD_TO_INR;
+                
+                // Display results
+                resultModel.textContent = selectedModel.name;
+                resultPromptTokens.textContent = promptTokens.toLocaleString();
+                resultInputTokens.textContent = inputTokens.toLocaleString();
+                resultOutputTokens.textContent = outputTokens.toLocaleString();
+                resultTotalTokens.textContent = totalTokens.toLocaleString();
+                resultInputCostUSD.textContent = '$' + inputCostUSD.toFixed(6);
+                resultOutputCostUSD.textContent = '$' + outputCostUSD.toFixed(6);
+                resultInputCostINR.textContent = '₹' + inputCostINR.toFixed(2);
+                resultOutputCostINR.textContent = '₹' + outputCostINR.toFixed(2);
+                resultTotalCostUSD.textContent = '$' + totalCostUSD.toFixed(6);
+                resultTotalCostINR.textContent = '₹' + totalCostINR.toFixed(2);
+                
+                // Show results section
+                resultsSection.classList.remove('hidden');
+            });
+            
+            // Token estimation function (4 characters per token)
+            function estimateTokens(text) {
+                if (!text) return 0;
+                return Math.ceil(text.length / 4);
+            }
+            
+            // Initialize with default view
+            updatePricingInputs();
+        });
+    </script>
+</body>
+</html>
